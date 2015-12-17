@@ -1,0 +1,22 @@
+{
+  "name": "dbeditor",
+  "description": "",
+  "main": "",
+  "authors": [
+    "''"
+  ],
+  "license": "''",
+  "moduleType": [
+    "amd"
+  ],
+  "homepage": "",
+  "dependencies": {
+    "angular": "1.4.8",
+    "bootstrap": "3.3.6",
+    "angular-resource": "1.4.8",
+    "angular-ui-bootstrap-datetimepicker": "0.14.0",
+    "angular-bootstrap": "0.14.3",
+    "jquery": "2.1.4",
+    "lodash": "3.10.1"
+  }
+}
