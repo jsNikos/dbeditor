@@ -1,21 +1,20 @@
 var dbEditorControllers = angular.module('dbEditorControllers', []);
 
-dbEditorControllers.controller('InstancesController', function($scope, $http) {
-  $scope.objectType = 'StoreHour';
-  $scope.rootInstances = undefined; // the instances tree for objectType
-  $scope.rootType = {type: 'StoreHour'};
+dbEditorControllers.controller('InstancesController', function($scope, $http, $location) {
+  $scope.objectType = $location.search().type;
 
-  $scope.instances = undefined; // available instances for selected type
+  $scope.selectedType = undefined; // selected type
   $scope.selectedInstance = undefined; // the instance selected for edit
-  $scope.editStatus = undefined; // saved, new, changed
+  $scope.editStatus = undefined; // saved, new, changed, canceled
   $scope.breadcrumpNodes = []; // [{type: Type, instance: Instance}] the path of selected instances (breadcrump)
 
   $http.get('/ws/dbeditor/api/' + $scope.objectType).then(function(data) {
-    $scope.rootInstances = data.data;
-    $scope.instances = $scope.rootInstances;
-    $scope.rootType.childObjects = $scope.rootInstances;
+    $scope.selectedType = {
+      type: $scope.objectType,
+      childObjects: data.data
+    };
     $scope.breadcrumpNodes.push({
-      type: $scope.rootType,
+      type: $scope.selectedType,
       instance: undefined,
       oldInstance: undefined
     });
@@ -23,7 +22,8 @@ dbEditorControllers.controller('InstancesController', function($scope, $http) {
 
   $scope.$watch('selectedInstance', function(newValue, oldValue) {
     var isNew = (newValue != undefined && newValue.id == undefined);
-    var isChanged = newValue != undefined && oldValue != undefined && (newValue.id === oldValue.id);
+    var isChanged = newValue != undefined && oldValue != undefined
+                    && (newValue.id === oldValue.id) && $scope.editStatus !== 'canceled';
     if (isNew) {
       $scope.editStatus = 'new';
     } else if (isChanged) {
@@ -55,7 +55,7 @@ dbEditorControllers.controller('InstancesController', function($scope, $http) {
         params: {
           id: $scope.selectedInstance.id
         },
-        data: $scope.selectedInstance
+        data: $scope.selectedInstance  //TODO must be the root (breadcrump.first)
       })
       .then(function() {
         $scope.editStatus = 'saved';
@@ -64,10 +64,10 @@ dbEditorControllers.controller('InstancesController', function($scope, $http) {
   };
 
   $scope.handleCancel = function() {
-    $scope.editStatus = undefined;
     var oldInstance = _.last($scope.breadcrumpNodes).oldInstance;
     var instance = _.last($scope.breadcrumpNodes).instance;
-    _.assign(instance, oldInstance);
+    _.assign(instance, angular.fromJson(angular.toJson(oldInstance)));
+    $scope.editStatus = 'canceled';
   };
 
   $scope.handleDelete = function(){
@@ -79,12 +79,13 @@ dbEditorControllers.controller('InstancesController', function($scope, $http) {
   };
 
   $scope.handleSelectSubtable = function(subTable) {
-    $scope.instances = subTable.childObjects;
+    $scope.selectedType = subTable;
     $scope.selectedInstance = undefined;
     $scope.editStatus = undefined;
     $scope.breadcrumpNodes.push({
       type: subTable,
-      instance: undefined
+      instance: undefined,
+      oldInstance: undefined
     });
   };
 
@@ -92,7 +93,9 @@ dbEditorControllers.controller('InstancesController', function($scope, $http) {
     $scope.selectedInstance = instance;
     var leaf = _.last($scope.breadcrumpNodes);
     leaf.instance = instance;
-    leaf.oldInstance = angular.fromJson(angular.toJson(instance));
+    if(leaf.oldInstance == undefined){
+      leaf.oldInstance = angular.fromJson(angular.toJson(instance));
+    }
   };
 
   $scope.handleBreadcrumb = function(breadcrumpNode) {
@@ -100,7 +103,7 @@ dbEditorControllers.controller('InstancesController', function($scope, $http) {
     _.remove($scope.breadcrumpNodes, function(node, idx) {
       return idx > nodeIdx;
     });
-    $scope.instances = breadcrumpNode.type.childObjects;
+    $scope.selectedType = breadcrumpNode.type;
     $scope.selectedInstance = breadcrumpNode.instance;
   };
 });

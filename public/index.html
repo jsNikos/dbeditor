@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>My HTML File</title>
+  <title>dbeditor</title>
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" href="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.css">
   <link rel="stylesheet" href="dbeditor.css">
@@ -89,7 +89,7 @@
         </table> -->
 
         <ul>
-          <li ng-repeat="instance in instances">
+          <li ng-repeat="instance in selectedType.childObjects">
             <a href="#" ng-click="handleSelectInstance(instance)">{{instance.id}}</a>
          </li>
        </ul>
