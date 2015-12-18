@@ -8,6 +8,8 @@ dbEditorControllers.controller('InstancesController', function($scope, $http, $l
   $scope.editStatus = undefined; // saved, new, changed, canceled
   $scope.breadcrumpNodes = []; // [{type: Type, instance: Instance}] the path of selected instances (breadcrump)
 
+  $scope.modelInited = false;
+
   $http.get('/ws/dbeditor/api/' + $scope.objectType).then(function(data) {
     $scope.selectedType = {
       type: $scope.objectType,
@@ -18,6 +20,7 @@ dbEditorControllers.controller('InstancesController', function($scope, $http, $l
       instance: undefined,
       oldInstance: undefined
     });
+    $scope.modelInited = true;
   });
 
   $scope.$watch('selectedInstance', function(newValue, oldValue) {
@@ -55,7 +58,7 @@ dbEditorControllers.controller('InstancesController', function($scope, $http, $l
         params: {
           id: $scope.selectedInstance.id
         },
-        data: $scope.selectedInstance  //TODO must be the root (breadcrump.first)
+        data: $scope.breadcrumpNodes[0].instance
       })
       .then(function() {
         $scope.editStatus = 'saved';
