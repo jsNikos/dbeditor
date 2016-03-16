@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en" ng-app="dbeditorApp">
+
+<head>
+  <meta charset="utf-8">
+  <title>dbeditor</title>
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.css">
+  <link rel="stylesheet" href="dbeditor.css">
+</head>
+
+<body ng-controller="InstancesController">
+  <div class="container" ng-cloak>
+    <div class="row">
+      <ol class="breadcrumb">
+        <li ng-repeat="breadcrumpNode in breadcrumpNodes">
+          <a href="#" ng-click="handleBreadcrumb(breadcrumpNode)">{{breadcrumpNode.type.type}} {{breadcrumpNode.instance.id}}</a>
+        </li>
+      </ol>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <p>Instances Editor</p>
+        <form class="form-horizontal">
+          <div class="form-group" ng-repeat="field in selectedInstance.fields">
+              <label class="col-sm-2 control-label">{{field.name}}</label>
+              <div ng-switch="findEditor(field)" class="col-sm-10">
+                <input type="text" class="form-control" ng-model="field.value" ng-switch-when="text">
+
+                <datetimepicker
+                ng-switch-when="datetime"
+                 placeholder="yyyy-MM-dd"
+                min-date="minDate"
+                show-weeks="showWeeks"
+                hour-step="1"
+                 minute-step="15"
+                 ng-model="field.value"
+                  show-meridian="true"
+                 date-format="yyyy-MM-dd"
+                  date-options="dateOptions"
+                 date-disabled="disabled(date, mode)"
+                 show-spinners="true"
+                readonly-time="false"></datetimepicker>
+
+                <select ng-model="field.value"
+                  ng-switch-when="enum" class="form-control">
+                  <option ng-repeat="allowedValue in field.allowedValues" value="{{allowedValue}}">{{allowedValue}}</option>
+                </select>
+
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="field.value" ng-switch-when="checkbox" />
+                  </label>
+                </div>
+
+                <div ng-switch-default>No editor for type {{field.type}}</div>
+              </div>
+          </div>
+
+          <div class="subtables" ng-if="selectedInstance.subTables && selectedInstance.subTables.length > 0">
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="subTable in selectedInstance.subTables">
+                <span class="badge">{{subTable.childObjects.length}}</span>
+                <button type="button" class="btn btn-default" ng-click="handleSelectSubtable(subTable)">Edit {{subTable.type}}</button>
+              </li>
+            </ul>
+          </div>
+        </form>
+
+        <div class="buttons" ng-if="selectedInstance != undefined">
+          <button type="button" class="btn btn-success" ng-click="handleSave()" ng-if="editStatus === 'new' || editStatus === 'changed'">Save</button>
+          <button type="button" class="btn btn-info" ng-click="handleCancel()" ng-if="editStatus === 'new' || editStatus === 'changed'">Cancel</button>
+          <button type="button" class="btn btn-danger" ng-click="handleDelete()" ng-if="selectedInstance.id != undefined">Delete</button>
+          <button type="button" class="btn btn-primary" ng-click="handleNew()" ng-if="editStatus !== 'changed'">New</button>
+        </div>
+
+      </div>
+
+      <div class="col-md-4">
+        <p>Instances</p>
+        <div class="table-responsive" ng-show="modelInited && selectedType.childObjects.length > 0">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th ng-repeat="field in selectedType.childObjects[0].fields">{{field.name}}</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="instance in selectedType.childObjects"
+                  ng-click="handleSelectInstance(instance)" ng-class="{info: selectedInstance === instance}">
+                <td ng-repeat="field in instance.fields">{{field.value}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="alert alert-info" ng-show="modelInited && selectedType.childObjects.length === 0" role="alert">No records found</div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="bower_components/lodash/lodash.min.js"></script>
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.js"></script>
+  <script src="app.js"></script>
+  <script src="controllers.js"></script>
+
+</body>
+
+</html>

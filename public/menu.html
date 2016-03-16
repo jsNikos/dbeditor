@@ -1,0 +1,16 @@
+<ol class="breadcrumb">
+  <li ng-repeat="menuItem in breadcrump" ng-class="{active: $last}">
+    <a ng-if="!$last" href="#" ng-click="handleBreadCrumpSelect($index)">{{menuItem.displayName}}</a>
+    <span ng-if="$last">{{menuItem.displayName}}</span>
+  </li>
+</ol>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-3" ng-repeat="menuItem in selectedItem.menuItems">
+      <div class="feature-box" ng-click="handleItemSelect(menuItem)">
+        <div class="feature-label">{{menuItem.displayName}}</div>
+      </div>
+    </div>
+  </div>
+</div>
