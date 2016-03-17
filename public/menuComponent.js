@@ -20,7 +20,7 @@ angular.module('menuComponent', [])
 
       $scope.handleItemSelect = function(menuItem) {
         $scope.$ctrl.onSelectMenuItem();
-        if (!menuItem.managerClassName) {
+        if (!menuItem.isTable) {
           $scope.selectedItem = menuItem;
           $scope.breadcrump.push(menuItem);
         } else {

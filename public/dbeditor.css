@@ -1,4 +1,4 @@
-.dbeditor .feature-box {
+.dbeditor .item-box {
   background-color: #63707d;
   border: 1px solid #27313a;
   border-radius: 10px;
@@ -6,16 +6,15 @@
   margin: 10px;
   cursor: pointer;
 }
-.dbeditor .feature-label {
+.dbeditor .item-label {
   font-size: 20px;
   text-align: center;
+  position: relative;
 }
 .dbeditor .menu-icon {
   cursor: pointer;
 }
-.dbeditor .feature-icon {
-  border-radius: 10px;
-  margin: 3px;
-  padding: 20px;
-  text-align: center;
+.dbeditor .item-icon{
+  position: absolute;
+  left: 10px;
 }

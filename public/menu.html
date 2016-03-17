@@ -15,16 +15,21 @@
     </ol>
   </div>
 
-  <div class="row" ng-show="showMenuItems">
+  <div class="row"
+    ng-show="showMenuItems">
     <div class="col-xs-12 col-sm-6 col-md-3"
       ng-repeat="menuItem in selectedItem.menuItems">
-      <div class="feature-box"
+      <div class="item-box"
         ng-click="handleItemSelect(menuItem)">
-        <div class="feature-icon">
-          <i ng-if="!menuItem.managerClassName" class="fa fa-folder-o fa-4x"></i>
-          <i ng-if="menuItem.managerClassName" class="fa fa-pencil-square-o fa-2x"></i>
+        <div class="item-label">
+          <span class="item-icon">
+            <i ng-if="menuItem.isTable"
+              class="fa fa-pencil-square-o"></i>
+            <i ng-if="!menuItem.isTable"
+              class="fa fa-folder-o"></i>
+          </span>
+          <span>{{menuItem.displayName}}</span>
         </div>
-        <div class="feature-label">{{menuItem.displayName}}</div>
       </div>
     </div>
   </div>
