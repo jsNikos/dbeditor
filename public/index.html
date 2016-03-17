@@ -1,26 +1,40 @@
 <!doctype html>
-<html lang="en" ng-app="dbeditorApp">
+<html lang="en"
+  ng-app="dbeditorApp">
 
 <head>
   <meta charset="utf-8">
   <title>dbeditor</title>
-  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
-  <link rel="stylesheet" href="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.css">
-  <link rel="stylesheet" href="dbeditor.css">
+  <link rel="stylesheet"
+    href="/webapps/commons/libs/bootstrap-3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet"
+    href="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.css">
+  <link rel="stylesheet"
+    href="/webapps/commons/libs/font-awesome-4.4.0/css/font-awesome.min.css">
+  <link rel="stylesheet"
+    href="dbeditor.css">
 </head>
 
-<body ng-controller="appController">
-  <menu on-select-table="handleTableSelect(managerClassName)"></menu>
+<body ng-controller="appController"
+  ng-cloak class="dbeditor">
 
-  <script src="bower_components/lodash/lodash.min.js"></script>
-  <script src="bower_components/jquery/dist/jquery.min.js"></script>
-  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <editormenu on-select-table="handleTableSelect(managerClassName)"
+    on-select-bread-crump="handleMenuItemSelect()"
+    on-select-menu-item="handleMenuItemSelect()"></editormenu>
+
+  <editor db-object-class="dbObjectClass"
+    ng-if="showEditor"></editor>
+
+
+  <script src="/webapps/commons/libs/lodash.js"></script>
+  <script src="/webapps/commons/libs/jquery.js"></script>
+  <script src="/webapps/commons/libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
   <script src="/webapps/commons/libs/angular.min.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
   <script src="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.js"></script>
   <script src="app.js"></script>
   <script src="menuComponent.js"></script>
-  <!-- <script src="controllers.js"></script> -->
+  <script src="editorComponent.js"></script>
 
 </body>
 

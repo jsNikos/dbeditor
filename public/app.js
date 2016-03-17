@@ -1,8 +1,6 @@
 var dbeditorApp = angular.module('dbeditorApp', [
-    // 'ui.bootstrap',
-    // 'ui.bootstrap.datetimepicker',
-    'menuComponent'
-    // 'dbEditorControllers'
+    'menuComponent',
+    'editorComponent'
   ])
   .config(function($locationProvider) {
     $locationProvider.html5Mode({
@@ -10,8 +8,25 @@ var dbeditorApp = angular.module('dbeditorApp', [
       requireBase: false
     });
   })
-  .controller('appController', ['$scope', '$timeout', function($scope, $timeout) {
-    $scope.handleTableSelect = function(managerClassName){
-//TODO
+  .controller('appController', ['$scope', '$http', function($scope, $http) {
+    $scope.dbObjectClass = undefined;
+    $scope.showEditor = false;
+
+    $scope.handleMenuItemSelect = function(){
+      $scope.showEditor = false;
+    };
+
+    $scope.handleTableSelect = function(managerClassName) {
+      $http
+        .get('/ws/dbeditor/api/findDBObjectClass', {
+          params: {
+            managerClassName: managerClassName
+          }
+        })
+        .then(function(resp){
+          $scope.dbObjectClass = resp.data;
+          $scope.showEditor = true;
+        })
+        .catch(console.log);
     };
   }]);
