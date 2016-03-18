@@ -15,6 +15,22 @@
     </ol>
   </div>
 
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-3">
+      <div class="form-group">
+        <select ui-select2
+          class="form-control"
+          ng-model="selectedTableIndex"
+          ng-change="handleItemSelect(flattenedMenuItems[selectedTableIndex])"
+          data-placeholder="Pick a Table">
+          <option value=""></option>
+          <option ng-repeat="item in flattenedMenuItems"
+            value="{{$index}}">{{item.displayName}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
   <div class="row"
     ng-show="showMenuItems">
     <div class="col-xs-12 col-sm-6 col-md-3"
