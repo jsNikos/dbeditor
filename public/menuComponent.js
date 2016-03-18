@@ -17,10 +17,10 @@ angular.module('menuComponent', ['ui.select2'])
             };
             $scope.breadcrump.push($scope.selectedItem);
             $scope.flattenedMenuItems = flattenMenu(resp.data);
-            addParents(resp.data);
+            addParents([$scope.selectedItem]);
           })
           .catch(console.log);
-      };
+      };   
 
       $scope.handleItemSelect = function(menuItem) {
         if (!menuItem) {
@@ -31,6 +31,9 @@ angular.module('menuComponent', ['ui.select2'])
           $scope.selectedItem = menuItem;
           $scope.breadcrump.push(menuItem);
         } else {
+          $scope.breadcrump.splice(0, $scope.breadcrump.length);
+          Array.prototype.push.apply($scope.breadcrump, findPathTo(menuItem));
+
           $scope.$ctrl.onSelectTable({
             managerClassName: menuItem.managerClassName
           });
@@ -42,9 +45,7 @@ angular.module('menuComponent', ['ui.select2'])
         $scope.breadcrump.splice($index + 1, $scope.breadcrump.length - $index - 1);
         $scope.selectedItem = $scope.breadcrump[$index];
         $scope.$ctrl.onSelectBreadCrump();
-        if ($index === 0 && !$scope.showMenuItems) {
-          $scope.showMenuItems = true;
-        }
+        $scope.showMenuItems = true;
       };
 
       function flattenMenu(menuItems) {
@@ -64,11 +65,21 @@ angular.module('menuComponent', ['ui.select2'])
           if (!menuItem.isTable) {
             _.forEach(menuItem.menuItems, function(child) {
               child.parent = menuItem;
-              addParents(child.menuItems);
             });
+            addParents(menuItem.menuItems);
           }
         });
         return menuItems;
+      }
+
+      function findPathTo(menuItem) {
+        var item = menuItem;
+        var path = [];
+        while (item.parent) {
+          item = item.parent;
+          path.push(item);
+        }
+        return _.reverse(path);
       }
 
     }],
