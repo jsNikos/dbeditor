@@ -6,14 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var httpProxy = require('http-proxy');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-
 var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -28,7 +21,7 @@ proxy.on('error', console.log);
 app.all('/ws/dbeditor/api*', function(req, res) {
   proxy.web(req, res);
 });
-app.all('/webapps*', function(req, res) {
+app.all('/webapps/commons*', function(req, res) {
   proxy.web(req, res);
 });
 
@@ -38,9 +31,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', routes);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

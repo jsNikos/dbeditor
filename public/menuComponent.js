@@ -20,7 +20,7 @@ angular.module('menuComponent', ['ui.select2'])
             addParents([$scope.selectedItem]);
           })
           .catch(console.log);
-      };   
+      };
 
       $scope.handleItemSelect = function(menuItem) {
         if (!menuItem) {
