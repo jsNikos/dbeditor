@@ -22,7 +22,8 @@
           class="form-control"
           ng-model="selectedTableIndex"
           ng-change="handleItemSelect(flattenedMenuItems[selectedTableIndex])"
-          data-placeholder="Pick a Table">
+          data-placeholder="Pick a Table"
+          style="width:100%;">
           <option value=""></option>
           <option ng-repeat="item in flattenedMenuItems"
             value="{{$index}}">{{item.displayName}}</option>

@@ -1,6 +1,5 @@
 <!doctype html>
-<html lang="en"
-  ng-app="dbeditorApp">
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -8,37 +7,37 @@
   <link rel="stylesheet"
     href="/webapps/commons/libs/bootstrap-3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet"
-    href="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.css">
+    href="/webapps/dbeditor/public/bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.css">
   <link rel="stylesheet"
-    href="bower_components/select2/select2.css">
-  <link rel="stylesheet"
-    href="bower_components/select2/select2-bootstrap.css">
+    href="/webapps/commons/libs/select2-4.0.0/dist/css/select2.min.css">
   <link rel="stylesheet"
     href="/webapps/commons/libs/font-awesome-4.4.0/css/font-awesome.min.css">
   <link rel="stylesheet"
     href="dbeditor.css">
 </head>
 
-<body ng-controller="appController"
-  ng-cloak
-  class="dbeditor">
+<body>
+  <div ng-controller="appController"
+    ng-app="dbeditorApp"
+    ng-cloak
+    class="dbeditor">
 
-  <editormenu on-select-table="handleTableSelect(managerClassName)"
-    on-select-bread-crump="handleMenuItemSelect()"
-    on-select-menu-item="handleMenuItemSelect()"></editormenu>
+    <editormenu on-select-table="handleTableSelect(managerClassName)"
+      on-select-bread-crump="handleMenuItemSelect()"
+      on-select-menu-item="handleMenuItemSelect()"></editormenu>
 
-  <editor db-object-class="dbObjectClass"
-    ng-if="showEditor"></editor>
+    <editor db-object-class="dbObjectClass"
+      ng-if="showEditor"></editor>
 
-
+  </div>
   <script src="/webapps/commons/libs/lodash.js"></script>
   <script src="/webapps/commons/libs/jquery.js"></script>
   <script src="/webapps/commons/libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
   <script src="/webapps/commons/libs/angular.min.js"></script>
-  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-  <script src="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.js"></script>
-  <script src="bower_components/select2/select2.min.js"></script>
-  <script src="bower_components/angular-ui-select2/src/select2.js"></script>
+  <script src="/webapps/dbeditor/public/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="/webapps/dbeditor/public/bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.js"></script>
+  <script src="/webapps/commons/libs/select2-4.0.0/dist/js/select2.full.min.js"></script>
+  <script src="/webapps/dbeditor/public/bower_components/angular-ui-select2/src/select2.js"></script>
   <script src="app.js"></script>
   <script src="menuComponent.js"></script>
   <script src="editorComponent.js"></script>

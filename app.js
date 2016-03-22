@@ -21,7 +21,7 @@ proxy.on('error', console.log);
 app.all('/ws/dbeditor/api*', function(req, res) {
   proxy.web(req, res);
 });
-app.all('/webapps/commons*', function(req, res) {
+app.all('/webapps*', function(req, res) {
   proxy.web(req, res);
 });
 
