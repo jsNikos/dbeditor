@@ -37,7 +37,8 @@
     <div class="col-xs-12 col-sm-6 col-md-3"
       ng-repeat="menuItem in selectedItem.menuItems">
       <div class="item-box"
-        ng-click="handleItemSelect(menuItem)">
+        ng-click="handleItemSelect(menuItem)"
+        ng-class="{disabled: !menuItem.enabled}">
         <div class="item-label">
           <span class="item-icon">
             <i ng-if="menuItem.isTable"

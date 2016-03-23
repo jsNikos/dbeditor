@@ -6,6 +6,11 @@
   margin: 10px;
   cursor: pointer;
 }
+.dbeditor .item-box.disabled {
+  background-color: #E7E7E7;
+  border-color: #B8B8B8;
+  cursor: not-allowed;
+}
 .dbeditor .item-label {
   font-size: 20px;
   text-align: center;
@@ -14,10 +19,10 @@
 .dbeditor .menu-icon {
   cursor: pointer;
 }
-.dbeditor .item-icon{
+.dbeditor .item-icon {
   position: absolute;
   left: 10px;
 }
-.dbeditor .display-name{
+.dbeditor .display-name {
   margin-left: 25px;
 }

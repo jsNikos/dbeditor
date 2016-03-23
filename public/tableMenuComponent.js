@@ -23,7 +23,7 @@ angular.module('tableMenuComponent', ['ui.select2'])
       };
 
       $scope.handleItemSelect = function(menuItem) {
-        if (!menuItem) {
+        if (!menuItem || !menuItem.enabled) {
           return;
         }
         $scope.$ctrl.onSelectMenuItem();
@@ -35,7 +35,8 @@ angular.module('tableMenuComponent', ['ui.select2'])
           updateBreadcrump(menuItem);
 
           $scope.$ctrl.onSelectTable({
-            managerClassName: menuItem.managerClassName
+            managerClassName: menuItem.managerClassName,
+            displayName: menuItem.displayName
           });
           $scope.showMenuItems = false;
         }
@@ -48,7 +49,7 @@ angular.module('tableMenuComponent', ['ui.select2'])
         $scope.showMenuItems = true;
       };
 
-      function updateBreadcrump(selectedMenuItem){
+      function updateBreadcrump(selectedMenuItem) {
         $scope.breadcrump.splice(0, $scope.breadcrump.length);
         Array.prototype.push.apply($scope.breadcrump, findPathTo(selectedMenuItem));
       }
@@ -56,7 +57,7 @@ angular.module('tableMenuComponent', ['ui.select2'])
       function flattenMenu(menuItems) {
         var tables = [];
         _.forEach(menuItems, function(menuItem) {
-          if (menuItem.isTable) {
+          if (menuItem.isTable && menuItem.enabled) {
             tables.push(menuItem);
           } else {
             Array.prototype.push.apply(tables, flattenMenu(menuItem.menuItems));

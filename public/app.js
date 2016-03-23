@@ -9,14 +9,15 @@ var dbeditorApp = angular.module('dbeditorApp', [
     });
   })
   .controller('appController', ['$scope', '$http', function($scope, $http) {
-    $scope.dbObjectClass = undefined;
+    $scope.dbObjectClass = undefined; // DBObjectClassDTO
     $scope.showEditor = false;
+    $scope.selectedTable = undefined; // String
 
     $scope.handleMenuItemSelect = function(){
       $scope.showEditor = false;
     };
 
-    $scope.handleTableSelect = function(managerClassName) {
+    $scope.handleTableSelect = function(managerClassName, displayName) {
       $http
         .get('/ws/dbeditor/api/findDBObjectClass', {
           params: {
@@ -26,6 +27,7 @@ var dbeditorApp = angular.module('dbeditorApp', [
         .then(function(resp){
           $scope.dbObjectClass = resp.data;
           $scope.showEditor = true;
+          $scope.selectedTable = displayName;
         })
         .catch(console.log);
     };

@@ -1,9 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="en"
+  ng-app="dbeditorApp"
+  ng-controller="appController">
 
 <head>
   <meta charset="utf-8">
-  <title>dbeditor</title>
+  <title>{{selectedTable}} Editor</title>
   <link rel="stylesheet"
     href="/webapps/commons/libs/bootstrap-3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet"
@@ -16,20 +18,16 @@
     href="dbeditor.css">
 </head>
 
-<body>
-  <div ng-controller="appController"
-    ng-app="dbeditorApp"
-    ng-cloak
-    class="dbeditor">
+<body ng-cloak
+  class="dbeditor">
 
-    <tablemenu on-select-table="handleTableSelect(managerClassName)"
-      on-select-bread-crump="handleMenuItemSelect()"
-      on-select-menu-item="handleMenuItemSelect()"></tablemenu>
+  <tablemenu on-select-table="handleTableSelect(managerClassName, displayName)"
+    on-select-bread-crump="handleMenuItemSelect()"
+    on-select-menu-item="handleMenuItemSelect()"></tablemenu>
 
-    <editor db-object-class="dbObjectClass"
-      ng-if="showEditor"></editor>
+  <editor db-object-class="dbObjectClass"
+    ng-if="showEditor"></editor>
 
-  </div>
   <script src="/webapps/commons/libs/lodash.js"></script>
   <script src="/webapps/commons/libs/jquery.js"></script>
   <script src="/webapps/commons/libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
