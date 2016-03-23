@@ -18,6 +18,7 @@
         <div class="form-group"
           ng-repeat="field in selectedInstance.fields">
           <label class="col-sm-2 control-label">{{field.name}}</label>
+
           <div ng-switch="findEditor(field)"
             class="col-sm-10">
             <input type="text"
@@ -56,6 +57,7 @@
 
             <div ng-switch-default>No editor for type {{field.type}}</div>
           </div>
+
         </div>
 
         <div class="subtables"
@@ -70,6 +72,7 @@
             </li>
           </ul>
         </div>
+        
       </form>
 
       <div class="buttons"
@@ -94,28 +97,10 @@
 
     </div>
 
-    <div class="col-md-6">    
-      <div class="table-responsive"
-        ng-show="modelInited && selectedType.childObjects.length > 0">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th ng-repeat="field in selectedType.childObjects[0].fields">{{field.name}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="instance in selectedType.childObjects"
-              ng-click="handleSelectInstance(instance)"
-              ng-class="{info: selectedInstance === instance}">
-              <td ng-repeat="field in instance.fields">{{field.value}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="alert alert-info"
-        ng-show="modelInited && selectedType.childObjects.length === 0"
-        role="alert">No records found</div>
-
+    <div class="col-md-6">
+      <instances selected-type="selectedType"
+        model-inited="modelInited"
+        on-select-instance="handleSelectInstance(instance)"></instances>
     </div>
   </div>
 </div>

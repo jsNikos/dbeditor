@@ -1,6 +1,7 @@
 angular.module('editorComponent', [
     'ui.bootstrap',
     'ui.bootstrap.datetimepicker',
+    'instancesComponent',
   ])
   .component('editor', {
     templateUrl: 'editor/editor.html',
