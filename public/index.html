@@ -7,7 +7,7 @@
   <link rel="stylesheet"
     href="/webapps/commons/libs/bootstrap-3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet"
-    href="/webapps/dbeditor/public/bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.css">
+    href="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.css">
   <link rel="stylesheet"
     href="/webapps/commons/libs/select2-4.0.0/dist/css/select2.min.css">
   <link rel="stylesheet"
@@ -22,9 +22,9 @@
     ng-cloak
     class="dbeditor">
 
-    <editormenu on-select-table="handleTableSelect(managerClassName)"
+    <tablemenu on-select-table="handleTableSelect(managerClassName)"
       on-select-bread-crump="handleMenuItemSelect()"
-      on-select-menu-item="handleMenuItemSelect()"></editormenu>
+      on-select-menu-item="handleMenuItemSelect()"></tablemenu>
 
     <editor db-object-class="dbObjectClass"
       ng-if="showEditor"></editor>
@@ -34,12 +34,12 @@
   <script src="/webapps/commons/libs/jquery.js"></script>
   <script src="/webapps/commons/libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
   <script src="/webapps/commons/libs/angular.min.js"></script>
-  <script src="/webapps/dbeditor/public/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-  <script src="/webapps/dbeditor/public/bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.js"></script>
   <script src="/webapps/commons/libs/select2-4.0.0/dist/js/select2.full.min.js"></script>
-  <script src="/webapps/dbeditor/public/bower_components/angular-ui-select2/src/select2.js"></script>
+  <script src="bower_components/angular-ui-select2/src/select2.js"></script>
   <script src="app.js"></script>
-  <script src="menuComponent.js"></script>
+  <script src="tableMenuComponent.js"></script>
   <script src="editorComponent.js"></script>
 
 </body>

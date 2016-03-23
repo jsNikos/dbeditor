@@ -1,7 +1,7 @@
-angular.module('menuComponent', ['ui.select2'])
-  .component('editormenu', {
-    templateUrl: 'menu.html',
-    controller: ['$http', '$scope', '$timeout', function($http, $scope, $timeout) {
+angular.module('tableMenuComponent', ['ui.select2'])
+  .component('tablemenu', {
+    templateUrl: 'tablemenu.html',
+    controller: ['$http', '$scope', function($http, $scope) {
       $scope.breadcrump = [];
       $scope.selectedItem = undefined;
       $scope.showMenuItems = true;
@@ -12,7 +12,7 @@ angular.module('menuComponent', ['ui.select2'])
         $http.get('/ws/dbeditor/api/menu')
           .then(function(resp) {
             $scope.selectedItem = {
-              displayName: 'menu',
+              displayName: 'tablemenu',
               menuItems: resp.data
             };
             $scope.breadcrump.push($scope.selectedItem);
@@ -31,8 +31,8 @@ angular.module('menuComponent', ['ui.select2'])
           $scope.selectedItem = menuItem;
           $scope.breadcrump.push(menuItem);
         } else {
-          $scope.breadcrump.splice(0, $scope.breadcrump.length);
-          Array.prototype.push.apply($scope.breadcrump, findPathTo(menuItem));
+          $scope.selectedTableIndex = undefined;
+          updateBreadcrump(menuItem);
 
           $scope.$ctrl.onSelectTable({
             managerClassName: menuItem.managerClassName
@@ -47,6 +47,11 @@ angular.module('menuComponent', ['ui.select2'])
         $scope.$ctrl.onSelectBreadCrump();
         $scope.showMenuItems = true;
       };
+
+      function updateBreadcrump(selectedMenuItem){
+        $scope.breadcrump.splice(0, $scope.breadcrump.length);
+        Array.prototype.push.apply($scope.breadcrump, findPathTo(selectedMenuItem));
+      }
 
       function flattenMenu(menuItems) {
         var tables = [];

@@ -1,22 +1,22 @@
 <div class="container-fluid"
   ng-cloak>
   <div class="row">
-    <ol class="breadcrumb">
-      <li ng-repeat="menuItem in breadcrump"
-        ng-class="{active: $last}">
-        <a ng-if="!$last && !$first"
-          href="#"
-          ng-click="handleBreadCrumpSelect($index)">{{menuItem.displayName}}</a>
-        <span ng-if="$last && !$first">{{menuItem.displayName}}</span>
-        <span ng-if="$first"
-          ng-click="handleBreadCrumpSelect($index)"
-          class="menu-icon"><i class="fa fa-bars"></i></span>
-      </li>
-    </ol>
-  </div>
+    <div class="col-md-6">
+      <ol class="breadcrumb">
+        <li ng-repeat="menuItem in breadcrump"
+          ng-class="{active: $last}">
+          <a ng-if="!$last && !$first"
+            href="#"
+            ng-click="handleBreadCrumpSelect($index)">{{menuItem.displayName}}</a>
+          <span ng-if="$last && !$first">{{menuItem.displayName}}</span>
+          <span ng-if="$first"
+            ng-click="handleBreadCrumpSelect($index)"
+            class="menu-icon"><i class="fa fa-th"></i></span>
+        </li>
+      </ol>
+    </div>
 
-  <div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-3">
+    <div class="col-md-6">
       <div class="form-group">
         <select ui-select2
           class="form-control"
