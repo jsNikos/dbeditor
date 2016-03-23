@@ -3,7 +3,7 @@ angular.module('editorComponent', [
     'ui.bootstrap.datetimepicker',
   ])
   .component('editor', {
-    templateUrl: 'editor.html',
+    templateUrl: 'editor/editor.html',
     controller: ['$http', '$scope', function($http, $scope) {
       $scope.selectedType = undefined; // selected type
       $scope.selectedInstance = undefined; // the instance selected for edit

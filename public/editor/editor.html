@@ -14,7 +14,6 @@
 
   <div class="row">
     <div class="col-md-6">
-      <p>Instances Editor</p>
       <form class="form-horizontal">
         <div class="form-group"
           ng-repeat="field in selectedInstance.fields">
@@ -95,8 +94,7 @@
 
     </div>
 
-    <div class="col-md-6">
-      <p>Instances</p>
+    <div class="col-md-6">    
       <div class="table-responsive"
         ng-show="modelInited && selectedType.childObjects.length > 0">
         <table class="table table-hover">

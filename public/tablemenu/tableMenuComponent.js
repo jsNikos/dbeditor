@@ -1,6 +1,6 @@
 angular.module('tableMenuComponent', ['ui.select2'])
   .component('tablemenu', {
-    templateUrl: 'tablemenu.html',
+    templateUrl: 'tablemenu/tablemenu.html',
     controller: ['$http', '$scope', function($http, $scope) {
       $scope.breadcrump = [];
       $scope.selectedItem = undefined;
