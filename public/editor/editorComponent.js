@@ -6,8 +6,8 @@ angular.module('editorComponent', [
   .component('editor', {
     templateUrl: 'editor/editor.html',
     controller: ['$http', '$scope', function($http, $scope) {
-      $scope.selectedType = undefined; // selected type
-      $scope.selectedInstance = undefined; // the instance selected for edit
+      $scope.selectedType = undefined; // DBObjectClassDTO
+      $scope.selectedInstance = undefined; // DBObjectDTO
       $scope.editStatus = undefined; // saved, new, changed, canceled
       $scope.breadcrumpNodes = []; // [{type: Type, instance: Instance}] the path of selected instances (breadcrump)
       $scope.modelInited = false;
@@ -15,7 +15,7 @@ angular.module('editorComponent', [
       this.$onInit = function() {
         $scope.selectedType = $scope.$ctrl.dbObjectClass;
         $scope.breadcrumpNodes.push({
-          type: $scope.selectedType,
+          type: $scope.$ctrl.dbObjectClass,
           instance: undefined,
           oldInstance: undefined
         });
@@ -49,20 +49,59 @@ angular.module('editorComponent', [
         }
       };
 
-      $scope.handleSave = function() {
-        $http({
-            url: '/ws/dbeditor/api/' + $scope.$ctrl.dbObjectClass.type,
-            method: 'PUT',
-            params: {
-              id: $scope.selectedInstance.id
-            },
-            data: $scope.breadcrumpNodes[0].instance
-          })
-          .then(function() {
+      // sends the instance's root-dbObject for update/insert
+      // note: the server response with a root-dbOject
+      // sets this root-object into the editor as selectedInstance
+      $scope.handleSave = function(breadcrumpRoot) {
+        var promise;
+        var currId = breadcrumpRoot.instance.id;
+        var isNew = (currId == undefined);
+        if (isNew) {
+          promise = insertInstance(breadcrumpRoot.instance);
+        } else {
+          promise = updateInstance(breadcrumpRoot.instance);
+        }
+
+        promise
+          .then(function(resp) {
             $scope.editStatus = 'saved';
+            breadcrumpRoot.instance = resp.data;
+            breadcrumpRoot.oldInstance = angular.fromJson(angular.toJson(resp.data));
+            $scope.breadcrumpNodes.splice(1, $scope.breadcrumpNodes - 1);
+            if (isNew) {
+              $scope.$ctrl.dbObjectClass.childObjects.push(resp.data);
+            } else {
+              var instanceIdx =
+                _.findIndex($scope.$ctrl.dbObjectClass.childObjects, {
+                  id: currId
+                });
+              $scope.$ctrl.dbObjectClass.childObjects[instanceIdx] = resp.data;
+            }
+
+            $scope.selectedType = $scope.$ctrl.dbObjectClass;
+            $scope.selectedInstance = resp.data;
           })
           .catch(console.log);
       };
+
+      function updateInstance(instance) {
+        return $http({
+          url: '/ws/dbeditor/api/' + $scope.$ctrl.dbObjectClass.type,
+          method: 'PUT',
+          params: {
+            id: $scope.selectedInstance.id
+          },
+          data: $scope.breadcrumpNodes[0].instance
+        });
+      }
+
+      function insertInstance(instance) {
+        return $http({
+          url: '/ws/dbeditor/api/' + $scope.$ctrl.dbObjectClass.type,
+          method: 'POST',
+          data: $scope.breadcrumpNodes[0].instance
+        });
+      }
 
       $scope.handleCancel = function() {
         var oldInstance = _.last($scope.breadcrumpNodes).oldInstance;
@@ -75,8 +114,24 @@ angular.module('editorComponent', [
         //TODO
       };
 
-      $scope.handleNew = function() {
-        //TODO
+      // requests empty-instance, adds to type.childObjects and sets this
+      // into editor as selectedInstance.
+      $scope.handleNew = function(selectedType) {
+        $http({
+            url: '/ws/dbeditor/api/empty/' + selectedType.type,
+            method: 'GET'
+          })
+          .then(function(resp) {
+            $scope.selectedInstance = resp.data;
+            var isSubTable = $scope.breadcrumpNodes.length > 1;
+            var leaf = _.last($scope.breadcrumpNodes);
+            if (isSubTable) {
+              leaf.type.childObjects.push(resp.data);
+            }
+            leaf.instance = resp.data;
+            leaf.oldInstance == undefined;
+          })
+          .catch(console.log);
       };
 
       $scope.handleSelectSubtable = function(subTable) {

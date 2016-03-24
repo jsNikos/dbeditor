@@ -26,3 +26,24 @@
 .dbeditor .display-name {
   margin-left: 40px;
 }
+.dbeditor .buttons{
+  position: fixed;
+  bottom: 0px;
+}
+.dbeditor .buttons button{
+  width: 100px;
+  margin-top: 3px;
+}
+.dbeditor .field-name {
+  display: inline-block;
+  vertical-align: middle;
+  min-width: 200px;
+  text-align: right;
+}
+.dbeditor .field-editor{
+  display: inline-block;
+  vertical-align: middle;
+}
+.dbeditor .editor-container{
+  padding-bottom: 40px;
+}

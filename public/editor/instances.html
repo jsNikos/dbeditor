@@ -9,7 +9,7 @@
     <tbody>
       <tr ng-repeat="instance in $ctrl.selectedType.childObjects"
         ng-click="handleSelectInstance(instance)"
-        ng-class="{info: selectedInstance === instance}">
+        ng-class="{info: $ctrl.selectedInstance === instance}">
         <td ng-repeat="field in instance.fields">{{field.value}}</td>
       </tr>
     </tbody>

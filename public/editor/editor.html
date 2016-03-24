@@ -1,4 +1,4 @@
-<div class="container-fluid"
+<div class="container-fluid editor-container"
   ng-cloak>
   <div class="row">
     <ol class="breadcrumb">
@@ -17,10 +17,10 @@
       <form class="form-horizontal">
         <div class="form-group"
           ng-repeat="field in selectedInstance.fields">
-          <label class="col-sm-2 control-label">{{field.name}}</label>
+          <div class="field-name">{{field.name}}</div>
 
           <div ng-switch="findEditor(field)"
-            class="col-sm-10">
+            class="field-editor">
             <input type="text"
               class="form-control"
               ng-model="field.value"
@@ -47,11 +47,11 @@
                 value="{{allowedValue}}">{{allowedValue}}</option>
             </select>
 
-            <div class="checkbox">
+            <div class="checkbox"
+              ng-switch-when="checkbox">
               <label>
                 <input type="checkbox"
-                  ng-model="field.value"
-                  ng-switch-when="checkbox" />
+                  ng-model="field.value" />
               </label>
             </div>
 
@@ -72,35 +72,38 @@
             </li>
           </ul>
         </div>
-        
-      </form>
 
-      <div class="buttons"
-        ng-if="selectedInstance != undefined">
-        <button type="button"
-          class="btn btn-success"
-          ng-click="handleSave()"
-          ng-if="editStatus === 'new' || editStatus === 'changed'">Save</button>
-        <button type="button"
-          class="btn btn-info"
-          ng-click="handleCancel()"
-          ng-if="editStatus === 'new' || editStatus === 'changed'">Cancel</button>
-        <button type="button"
-          class="btn btn-danger"
-          ng-click="handleDelete()"
-          ng-if="selectedInstance.id != undefined">Delete</button>
-        <button type="button"
-          class="btn btn-primary"
-          ng-click="handleNew()"
-          ng-if="editStatus !== 'changed'">New</button>
-      </div>
+      </form>
 
     </div>
 
     <div class="col-md-6">
       <instances selected-type="selectedType"
+        selected-instance="selectedInstance"
         model-inited="modelInited"
         on-select-instance="handleSelectInstance(instance)"></instances>
     </div>
   </div>
+
+  <div class="buttons">
+    <span ng-if="selectedInstance != undefined">
+      <button type="button"
+        class="btn btn-success"
+        ng-click="handleSave(breadcrumpNodes[0])"
+        ng-if="editStatus === 'new' || editStatus === 'changed'">Save</button>
+      <button type="button"
+        class="btn btn-info"
+        ng-click="handleCancel()"
+        ng-if="editStatus === 'new' || editStatus === 'changed'">Cancel</button>
+      <button type="button"
+        class="btn btn-danger"
+        ng-click="handleDelete()"
+        ng-if="selectedInstance.id != undefined">Delete</button>
+    </span>
+    <button type="button"
+      class="btn btn-primary"
+      ng-click="handleNew(selectedType)"
+      ng-if="editStatus !== 'changed'">New</button>
+  </div>
+
 </div>
