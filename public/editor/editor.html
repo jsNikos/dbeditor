@@ -97,7 +97,7 @@
         ng-if="editStatus === 'new' || editStatus === 'changed'">Cancel</button>
       <button type="button"
         class="btn btn-danger"
-        ng-click="handleDelete()"
+        ng-click="handleDelete(selectedInstance)"
         ng-if="selectedInstance.id != undefined">Delete</button>
     </span>
     <button type="button"

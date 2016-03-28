@@ -84,22 +84,35 @@ angular.module('editorComponent', [
           .catch(console.log);
       };
 
+      // only for root-dbObjects
       function updateInstance(instance) {
         return $http({
           url: '/ws/dbeditor/api/' + $scope.$ctrl.dbObjectClass.type,
           method: 'PUT',
           params: {
-            id: $scope.selectedInstance.id
+            id: instance.id
           },
-          data: $scope.breadcrumpNodes[0].instance
+          data: instance
         });
       }
 
+      // only for root-dbObjects
       function insertInstance(instance) {
         return $http({
           url: '/ws/dbeditor/api/' + $scope.$ctrl.dbObjectClass.type,
           method: 'POST',
-          data: $scope.breadcrumpNodes[0].instance
+          data: instance
+        });
+      }
+
+      // only for root-dbObjects
+      function deleteInstance(instance) {
+        return $http({
+          url: '/ws/dbeditor/api/' + $scope.$ctrl.dbObjectClass.type,
+          method: 'DELETE',
+          params: {
+            id: instance.id
+          }
         });
       }
 
@@ -110,8 +123,27 @@ angular.module('editorComponent', [
         $scope.editStatus = 'canceled';
       };
 
-      $scope.handleDelete = function() {
-        //TODO
+      // for subtable deletions, triggers an update on the root-dbObject.
+      // for root-dbObjects calls the delete server-endpoint.
+      $scope.handleDelete = function(instance) {
+        var isSubTable = $scope.breadcrumpNodes.length > 1;
+        var leaf = _.last($scope.breadcrumpNodes);
+        if (isSubTable) {
+          var instanceIdx = _.findIndex(leaf.type.childObjects, {
+            id: instance.id
+          });
+          leaf.type.childObjects.splice(instanceIdx, 1);
+          $scope.handleSave($scope.breadcrumpNodes[0]);
+        } else {
+          deleteInstance(instance).then(function(resp) {
+            _.remove($scope.$ctrl.dbObjectClass.childObjects, {
+              id: instance.id
+            });
+            leaf.instance = undefined;
+            leaf.oldInstance = undefined;
+            $scope.selectedInstance = undefined;
+          });
+        }
       };
 
       // requests empty-instance, adds to type.childObjects and sets this
