@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>{{selectedTable}} Editor</title>
+  <title>{{selectedMenuItem.displayName}} Editor</title>
   <link rel="stylesheet"
     href="/webapps/commons/libs/bootstrap-3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet"
@@ -21,11 +21,12 @@
 <body ng-cloak
   class="dbeditor">
 
-  <tablemenu on-select-table="handleTableSelect(managerClassName, displayName)"
+  <tablemenu on-select-table="handleTableSelect(menuItem)"
     on-select-bread-crump="handleMenuItemSelect()"
     on-select-menu-item="handleMenuItemSelect()"></tablemenu>
 
   <editor db-object-class="dbObjectClass"
+    menu-item="selectedMenuItem"
     ng-if="showEditor"></editor>
 
   <script src="/webapps/commons/libs/lodash.js"></script>
@@ -40,6 +41,7 @@
   <script src="tablemenu/tableMenuComponent.js"></script>
   <script src="editor/instancesComponent.js"></script>
   <script src="editor/editorComponent.js"></script>
+  <script src="editor/editorService.js"></script>
 
 </body>
 

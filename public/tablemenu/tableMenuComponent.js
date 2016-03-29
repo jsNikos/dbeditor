@@ -35,8 +35,7 @@ angular.module('tableMenuComponent', ['ui.select2'])
           updateBreadcrump(menuItem);
 
           $scope.$ctrl.onSelectTable({
-            managerClassName: menuItem.managerClassName,
-            displayName: menuItem.displayName
+            menuItem: menuItem
           });
           $scope.showMenuItems = false;
         }
