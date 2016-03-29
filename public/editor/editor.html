@@ -6,8 +6,8 @@
         ng-class="{active: $last}">
         <a href="#"
           ng-click="handleBreadcrumb(breadcrumpNode)"
-          ng-if="!$last">{{breadcrumpNode.type.type}} {{breadcrumpNode.instance.id}}</a>
-        <span ng-if="$last">{{breadcrumpNode.type.type}} {{breadcrumpNode.instance.id}}</span>
+          ng-if="!$last">{{breadcrumpNode.type.tableName}} {{breadcrumpNode.instance.id}}</a>
+        <span ng-if="$last">{{breadcrumpNode.type.tableName}} {{breadcrumpNode.instance.id}}</span>
       </li>
     </ol>
   </div>
@@ -68,7 +68,7 @@
               <span class="badge">{{subTable.childObjects.length}}</span>
               <button type="button"
                 class="btn btn-default"
-                ng-click="handleSelectSubtable(subTable)">Edit {{subTable.type}}</button>
+                ng-click="handleSelectSubtable(subTable)">Edit {{subTable.tableName}}</button>
             </li>
           </ul>
         </div>

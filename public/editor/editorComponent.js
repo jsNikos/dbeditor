@@ -84,38 +84,6 @@ angular.module('editorComponent', [
           .catch(console.log);
       };
 
-      // only for root-dbObjects
-      function updateInstance(instance) {
-        return $http({
-          url: '/ws/dbeditor/api/' + $scope.$ctrl.dbObjectClass.type,
-          method: 'PUT',
-          params: {
-            id: instance.id
-          },
-          data: instance
-        });
-      }
-
-      // only for root-dbObjects
-      function insertInstance(instance) {
-        return $http({
-          url: '/ws/dbeditor/api/' + $scope.$ctrl.dbObjectClass.type,
-          method: 'POST',
-          data: instance
-        });
-      }
-
-      // only for root-dbObjects
-      function deleteInstance(instance) {
-        return $http({
-          url: '/ws/dbeditor/api/' + $scope.$ctrl.dbObjectClass.type,
-          method: 'DELETE',
-          params: {
-            id: instance.id
-          }
-        });
-      }
-
       $scope.handleCancel = function() {
         var oldInstance = _.last($scope.breadcrumpNodes).oldInstance;
         var instance = _.last($scope.breadcrumpNodes).instance;
@@ -150,8 +118,12 @@ angular.module('editorComponent', [
       // into editor as selectedInstance.
       $scope.handleNew = function(selectedType) {
         $http({
-            url: '/ws/dbeditor/api/empty/' + selectedType.type,
-            method: 'GET'
+            url: '/ws/dbeditor/api/empty',
+            method: 'GET',
+            params: {
+              classType: selectedType.classType,
+              managedClassType: $scope.$ctrl.dbObjectClass.classType
+            }
           })
           .then(function(resp) {
             $scope.selectedInstance = resp.data;
@@ -194,6 +166,44 @@ angular.module('editorComponent', [
         $scope.selectedType = breadcrumpNode.type;
         $scope.selectedInstance = breadcrumpNode.instance;
       };
+
+      // only for root-dbObjects
+      function updateInstance(instance) {
+        return $http({
+          url: '/ws/dbeditor/api/',
+          method: 'PUT',
+          params: {
+            id: instance.id,
+            classType: $scope.$ctrl.dbObjectClass.classType
+          },
+          data: instance
+        });
+      }
+
+      // only for root-dbObjects
+      function insertInstance(instance) {
+        return $http({
+          url: '/ws/dbeditor/api/',
+          method: 'POST',
+          params: {
+            classType: $scope.$ctrl.dbObjectClass.classType
+          },
+          data: instance
+        });
+      }
+
+      // only for root-dbObjects
+      function deleteInstance(instance) {
+        return $http({
+          url: '/ws/dbeditor/api/',
+          method: 'DELETE',
+          params: {
+            id: instance.id,
+            classType: $scope.$ctrl.dbObjectClass.classType
+          }
+        });
+      }
+
     }],
     bindings: {
       dbObjectClass: '<'
