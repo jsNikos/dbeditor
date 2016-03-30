@@ -18,10 +18,13 @@ var proxy = httpProxy.createProxyServer({
   }
 });
 proxy.on('error', console.log);
-app.all('/ws/dbeditor/api*', function(req, res) {
+app.all('/ws*', function(req, res) {
   proxy.web(req, res);
 });
 app.all('/webapps*', function(req, res) {
+  proxy.web(req, res);
+});
+app.all('/Login*', function(req, res) {
   proxy.web(req, res);
 });
 

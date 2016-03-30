@@ -1,6 +1,7 @@
 var dbeditorApp = angular.module('dbeditorApp', [
     'tableMenuComponent',
-    'editorComponent'
+    'editorComponent',
+    'serverErrorComponent'
   ])
   .config(function($locationProvider) {
     $locationProvider.html5Mode({
