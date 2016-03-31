@@ -39,8 +39,9 @@
 .dbeditor .field-name {
   display: inline-block;
   vertical-align: middle;
-  min-width: 200px;
+  width: 200px;
   text-align: right;
+  padding-right: 5px;
 }
 .dbeditor .field-editor{
   display: inline-block;

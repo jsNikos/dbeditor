@@ -6,8 +6,8 @@
         ng-class="{active: $last}">
         <a href="#"
           ng-click="handleBreadcrumb(breadcrumpNode)"
-          ng-if="!$last">{{breadcrumpNode.type.tableName}} {{breadcrumpNode.instance.id}}</a>
-        <span ng-if="$last">{{breadcrumpNode.type.tableName}} {{breadcrumpNode.instance.id}}</span>
+          ng-if="!$last"><b>{{breadcrumpNode.type.displayName}}</b> <i>{{breadcrumpNode.instance.displayValue}}</i></a>
+        <span ng-if="$last"><b>{{breadcrumpNode.type.displayName}}</b> <i>{{breadcrumpNode.instance.displayValue}}</i></span>
       </li>
     </ol>
   </div>
@@ -17,7 +17,9 @@
       <form class="form-horizontal">
         <div class="form-group"
           ng-repeat="field in selectedInstance.fields">
-          <div class="field-name">{{field.name}}</div>
+          <div class="field-name">
+            <b>{{field.displayName}}</b><br><small>{{field.help}}</small>
+          </div>
 
           <div ng-switch="findEditor(field)"
             class="field-editor">
