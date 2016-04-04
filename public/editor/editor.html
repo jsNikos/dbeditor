@@ -18,17 +18,23 @@
         <div class="form-group"
           ng-repeat="field in selectedInstance.fields">
           <div class="field-name">
-            <b>{{field.displayName}}</b><br><small>{{field.help}}</small>
+            <b>{{field.displayName}}</b>
+            <br>
+            <small>{{field.help}}</small>
           </div>
 
-          <div ng-switch="findEditor(field)"
+          <div ng-switch="field.editor"
             class="field-editor">
             <input type="text"
               class="form-control"
               ng-model="field.value"
-              ng-switch-when="text">
+              ng-switch-when="TEXT">
 
-            <datetimepicker ng-switch-when="datetime"
+            <textarea class="form-control"
+              ng-model="field.value"
+              ng-switch-when="TEXTAREA"></textarea>
+
+            <datetimepicker ng-switch-when="DATETIME"
               placeholder="yyyy-MM-dd"
               min-date="minDate"
               show-weeks="showWeeks"
@@ -43,21 +49,23 @@
               readonly-time="false"></datetimepicker>
 
             <select ng-model="field.value"
-              ng-switch-when="enum"
+              ng-switch-when="SELECT"
               class="form-control">
               <option ng-repeat="allowedValue in field.allowedValues"
                 value="{{allowedValue}}">{{allowedValue}}</option>
             </select>
 
+            <!-- IMAGE_CHOOSER -->
+
             <div class="checkbox"
-              ng-switch-when="checkbox">
+              ng-switch-when="CHECKBOX">
               <label>
                 <input type="checkbox"
                   ng-model="field.value" />
               </label>
             </div>
 
-            <div ng-switch-default>No editor for type {{field.type}}</div>
+            <div ng-switch-default>Not supported editor {{field.editor}}</div>
           </div>
 
         </div>

@@ -35,21 +35,6 @@ angular.module('editorComponent', [
         }
       }, true);
 
-      $scope.findEditor = function(field) {
-        if (field.type === 'java.lang.String') {
-          return 'text';
-        }
-        if (field.type === 'ads.util.Day') {
-          return 'datetime';
-        }
-        if (field.type === 'boolean') {
-          return 'checkbox';
-        }
-        if (field.allowedValues && field.allowedValues.length > 0) {
-          return 'enum';
-        }
-      };
-
       // sends the instance's root-dbObject for update/insert
       // note: the server response with a root-dbOject
       // sets this root-object into the editor as selectedInstance
