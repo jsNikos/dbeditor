@@ -27,6 +27,9 @@ app.all('/webapps*', function(req, res) {
 app.all('/Login*', function(req, res) {
   proxy.web(req, res);
 });
+app.all('/ScaledImage*', function(req, res) {
+  proxy.web(req, res);
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({

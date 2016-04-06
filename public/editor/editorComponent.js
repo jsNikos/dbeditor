@@ -3,6 +3,8 @@ angular.module('editorComponent', [
     'ui.bootstrap.datetimepicker',
     'instancesComponent',
     'editorService',
+    'ui.select',
+    'ngSanitize'
   ])
   .component('editor', {
     templateUrl: 'editor/editor.html',
@@ -12,6 +14,17 @@ angular.module('editorComponent', [
       $scope.editStatus = undefined; // saved, new, changed, canceled
       $scope.breadcrumpNodes = []; // [{type: Type, instance: Instance}] the path of selected instances (breadcrump)
       $scope.modelInited = false;
+
+
+      $scope.itemArray = [
+             {id: 1, name: 'first'},
+             {id: 2, name: 'second'},
+             {id: 3, name: 'third'},
+             {id: 4, name: 'fourth'},
+             {id: 5, name: 'fifth'},
+         ];
+         $scope.selected = { value: $scope.itemArray[0] };
+
 
       this.$onInit = function() {
         $scope.selectedType = $scope.$ctrl.dbObjectClass;

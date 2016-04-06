@@ -51,11 +51,22 @@
             <select ng-model="field.value"
               ng-switch-when="SELECT"
               class="form-control">
+              <option value=""></option>
               <option ng-repeat="allowedValue in field.allowedValues"
                 value="{{allowedValue}}">{{allowedValue}}</option>
             </select>
 
-            <!-- IMAGE_CHOOSER -->
+            <div ng-switch-when="IMAGE_CHOOSER">
+              <ui-select ng-model="field.value" width="400px;">
+                <ui-select-match placeholder="Select an Image"
+                  allow-clear="true">
+                  <img ng-src="{{field.value.path}}" class="dbimage"/><span>{{field.value.name}}</span>
+                </ui-select-match>
+                <ui-select-choices repeat="allowedValue in (field.allowedValues | filter: $select.search) track by allowedValue.id">
+                  <img ng-src="{{allowedValue.path}}" class="dbimage"/><span>{{allowedValue.groupName}} - {{allowedValue.name}}</span>
+                </ui-select-choices>
+              </ui-select>
+            </div>
 
             <div class="checkbox"
               ng-switch-when="CHECKBOX">

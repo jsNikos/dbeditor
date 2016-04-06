@@ -10,7 +10,18 @@
       <tr ng-repeat="instance in $ctrl.selectedType.childObjects"
         ng-click="handleSelectInstance(instance)"
         ng-class="{info: $ctrl.selectedInstance === instance}">
-        <td ng-repeat="field in instance.fields">{{field.value}}</td>
+        <td ng-repeat="field in instance.fields">
+          <div ng-switch="field.editor">
+
+            <div ng-switch-when="IMAGE_CHOOSER">
+              <img ng-if="field.value" ng-src="{{field.value.path}}"
+                class="dbimage" />
+              <span>{{field.value.name}}</span>
+            </div>
+
+            <div ng-switch-default>{{field.value}}</div>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>

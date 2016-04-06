@@ -46,7 +46,11 @@
 .dbeditor .field-editor{
   display: inline-block;
   vertical-align: middle;
+  min-width: 300px;
 }
 .dbeditor .editor-container{
   padding-bottom: 40px;
+}
+.dbeditor .dbimage{
+  margin-right: 5px;
 }
