@@ -14,11 +14,11 @@ angular.module('editorComponent', [
       $scope.editStatus = undefined; // saved, new, changed, canceled
       $scope.breadcrumpNodes = []; // [{type: Type, instance: Instance}] the path of selected instances (breadcrump)
       $scope.modelInited = false;
-      
+
       this.$onInit = function() {
-        $scope.selectedType = $scope.$ctrl.dbObjectClass;
+        $scope.selectedType = $scope.$ctrl.selectedManagedTable;
         $scope.breadcrumpNodes.push({
-          type: $scope.$ctrl.dbObjectClass,
+          type: $scope.$ctrl.selectedManagedTable,
           instance: undefined,
           oldInstance: undefined
         });
@@ -45,9 +45,9 @@ angular.module('editorComponent', [
         var currId = breadcrumpRoot.instance.id;
         var isNew = (currId == undefined);
         if (isNew) {
-          promise = editorService.insertInstance(breadcrumpRoot.instance, $scope.$ctrl.dbObjectClass.classType);
+          promise = editorService.insertInstance(breadcrumpRoot.instance, $scope.$ctrl.selectedManagedTable.classType);
         } else {
-          promise = editorService.updateInstance(breadcrumpRoot.instance, $scope.$ctrl.dbObjectClass.classType);
+          promise = editorService.updateInstance(breadcrumpRoot.instance, $scope.$ctrl.selectedManagedTable.classType);
         }
 
         promise
@@ -57,16 +57,16 @@ angular.module('editorComponent', [
             breadcrumpRoot.oldInstance = angular.fromJson(angular.toJson(resp.data));
             $scope.breadcrumpNodes.splice(1, $scope.breadcrumpNodes - 1);
             if (isNew) {
-              $scope.$ctrl.dbObjectClass.childObjects.push(resp.data);
+              $scope.$ctrl.selectedManagedTable.childObjects.push(resp.data);
             } else {
               var instanceIdx =
-                _.findIndex($scope.$ctrl.dbObjectClass.childObjects, {
+                _.findIndex($scope.$ctrl.selectedManagedTable.childObjects, {
                   id: currId
                 });
-              $scope.$ctrl.dbObjectClass.childObjects[instanceIdx] = resp.data;
+              $scope.$ctrl.selectedManagedTable.childObjects[instanceIdx] = resp.data;
             }
 
-            $scope.selectedType = $scope.$ctrl.dbObjectClass;
+            $scope.selectedType = $scope.$ctrl.selectedManagedTable;
             $scope.selectedInstance = resp.data;
           })
           .catch(console.log);
@@ -91,9 +91,9 @@ angular.module('editorComponent', [
           leaf.type.childObjects.splice(instanceIdx, 1);
           $scope.handleSave($scope.breadcrumpNodes[0]);
         } else {
-          editorService.deleteInstance(instance, $scope.$ctrl.dbObjectClass.classType)
+          editorService.deleteInstance(instance, $scope.$ctrl.selectedManagedTable.classType)
              .then(function(resp) {
-            _.remove($scope.$ctrl.dbObjectClass.childObjects, {
+            _.remove($scope.$ctrl.selectedManagedTable.childObjects, {
               id: instance.id
             });
             leaf.instance = undefined;
@@ -111,7 +111,7 @@ angular.module('editorComponent', [
             method: 'GET',
             params: {
               classType: selectedType.classType,
-              managedClassType: $scope.$ctrl.dbObjectClass.classType
+              managedClassType: $scope.$ctrl.selectedManagedTable.classType
             }
           })
           .then(function(resp) {
@@ -158,7 +158,7 @@ angular.module('editorComponent', [
 
     }],
     bindings: {
-      dbObjectClass: '<',
+      selectedManagedTable: '<',
       menuItem: '<'
     }
   });

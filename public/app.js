@@ -10,13 +10,13 @@ var dbeditorApp = angular.module('dbeditorApp', [
     });
   })
   .controller('appController', ['$scope', '$http', '$location', function($scope, $http, $location) {
-    $scope.dbObjectClass = undefined; // DBObjectClassDTO (selected table from menu)
+    $scope.selectedManagedTable = undefined; // DBObjectClassDTO (selected table from menu)
     $scope.showEditor = false;
     $scope.selectedMenuItem = undefined; // MenuItemDTO
 
     function init(){
       console.log($location.search());
-      // tablename=dbObjectClass.tableName&id=selectedInstance.id (only for route objects)
+      // managerClassName=selectedMenuItem.managerClassName&id=selectedInstance.id (only for route objects)
       //TODO restore state from url
     }
 
@@ -32,7 +32,7 @@ var dbeditorApp = angular.module('dbeditorApp', [
           }
         })
         .then(function(resp){
-          $scope.dbObjectClass = resp.data;
+          $scope.selectedManagedTable = resp.data;
           $scope.showEditor = true;
           $scope.selectedMenuItem = menuItem;
         })
