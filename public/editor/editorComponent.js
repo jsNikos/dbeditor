@@ -2,7 +2,6 @@ angular.module('editorComponent', [
     'ui.bootstrap',
     'ui.bootstrap.datetimepicker',
     'instancesComponent',
-    'editorService',
     'ui.select',
     'ngSanitize'
   ])
@@ -23,6 +22,7 @@ angular.module('editorComponent', [
           oldInstance: undefined
         });
         $scope.modelInited = true;
+        restoreStateFromUrl();
       };
 
       $scope.$watch('selectedInstance', function(newValue, oldValue) {
@@ -92,14 +92,14 @@ angular.module('editorComponent', [
           $scope.handleSave($scope.breadcrumpNodes[0]);
         } else {
           editorService.deleteInstance(instance, $scope.$ctrl.selectedManagedTable.classType)
-             .then(function(resp) {
-            _.remove($scope.$ctrl.selectedManagedTable.childObjects, {
-              id: instance.id
+            .then(function(resp) {
+              _.remove($scope.$ctrl.selectedManagedTable.childObjects, {
+                id: instance.id
+              });
+              leaf.instance = undefined;
+              leaf.oldInstance = undefined;
+              $scope.selectedInstance = undefined;
             });
-            leaf.instance = undefined;
-            leaf.oldInstance = undefined;
-            $scope.selectedInstance = undefined;
-          });
         }
       };
 
@@ -145,6 +145,10 @@ angular.module('editorComponent', [
         if (leaf.oldInstance == undefined) {
           leaf.oldInstance = angular.fromJson(angular.toJson(instance));
         }
+        var isRootInstance = ($scope.breadcrumpNodes.length === 1);
+        if (isRootInstance) {
+          editorService.updateUrlState(editorService.INSTANCE_ID, instance.id);
+        }
       };
 
       $scope.handleBreadcrumb = function(breadcrumpNode) {
@@ -155,6 +159,16 @@ angular.module('editorComponent', [
         $scope.selectedType = breadcrumpNode.type;
         $scope.selectedInstance = breadcrumpNode.instance;
       };
+
+      function restoreStateFromUrl() {
+        var id = editorService.findFromUrlState(editorService.INSTANCE_ID);
+        if (id) {
+          var instance = _.find($scope.selectedType.childObjects, {
+            id: id
+          });
+          instance && $scope.handleSelectInstance(instance);
+        }
+      }
 
     }],
     bindings: {

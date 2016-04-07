@@ -35,7 +35,7 @@
   <div class="row"
     ng-show="showMenuItems">
     <div class="col-xs-12 col-sm-6 col-md-3"
-      ng-repeat="menuItem in selectedItem.menuItems">
+      ng-repeat="menuItem in $ctrl.selectedMenuItem.menuItems">
       <div class="item-box"
         ng-click="handleItemSelect(menuItem)"
         ng-class="{disabled: !menuItem.enabled}">
