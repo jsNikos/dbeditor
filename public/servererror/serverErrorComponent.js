@@ -51,7 +51,7 @@ angular.module('serverErrorComponent', ['ui.bootstrap'])
         return $uibModal
           .open({
             animation: true,
-            templateUrl: 'editor/errorPopup.html',
+            templateUrl: 'servererror/errorPopup.html',
             controller: 'ErrorPopupController',
             size: 'sm',
             resolve: {

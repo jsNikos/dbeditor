@@ -1,6 +1,6 @@
 angular.module('instancesComponent', [])
   .component('instances', {
-    templateUrl: 'editor/instances.html',
+    templateUrl: 'instances/instances.html',
     controller: ['$scope', function($scope) {
 
       $scope.handleSelectInstance = function(instance){
