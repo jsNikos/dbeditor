@@ -34,6 +34,9 @@
               ng-model="field.value"
               ng-switch-when="TEXTAREA"></textarea>
 
+            <timeofday ng-model="field.value"
+              ng-switch-when="TIME_OF_DAY"></timeofday>
+
             <datetimepicker ng-switch-when="DATETIME"
               placeholder="yyyy-MM-dd"
               min-date="minDate"
@@ -57,13 +60,18 @@
             </select>
 
             <div ng-switch-when="IMAGE_CHOOSER">
-              <ui-select ng-model="field.value" width="400px;">
+              <ui-select ng-model="field.value"
+                width="400px;">
                 <ui-select-match placeholder="Select an Image"
                   allow-clear="true">
-                  <img ng-src="{{field.value.path}}" class="dbimage"/><span>{{field.value.name}}</span>
+                  <img ng-src="{{field.value.path}}"
+                    class="dbimage" />
+                  <span>{{field.value.name}}</span>
                 </ui-select-match>
                 <ui-select-choices repeat="allowedValue in (field.allowedValues | filter: $select.search) track by allowedValue.id">
-                  <img ng-src="{{allowedValue.path}}" class="dbimage"/><span>{{allowedValue.groupName}} - {{allowedValue.name}}</span>
+                  <img ng-src="{{allowedValue.path}}"
+                    class="dbimage" />
+                  <span>{{allowedValue.groupName}} - {{allowedValue.name}}</span>
                 </ui-select-choices>
               </ui-select>
             </div>

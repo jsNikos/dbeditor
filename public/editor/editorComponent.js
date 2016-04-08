@@ -3,7 +3,8 @@ angular.module('editorComponent', [
     'ui.bootstrap.datetimepicker',
     'instancesComponent',
     'ui.select',
-    'ngSanitize'
+    'ngSanitize',
+    'timeofday'
   ])
   .component('editor', {
     templateUrl: 'editor/editor.html',

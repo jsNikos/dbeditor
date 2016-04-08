@@ -19,6 +19,10 @@
               <span>{{field.value.name}}</span>
             </div>
 
+            <div ng-switch-when="TIME_OF_DAY">
+              <span>{{field.value.displayValue}}</span>
+            </div>
+
             <div ng-switch-default>{{field.value}}</div>
           </div>
         </td>
