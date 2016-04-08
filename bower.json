@@ -13,7 +13,6 @@
   "dependencies": {
     "angular-ui-bootstrap-datetimepicker": "0.14.0",
     "angular-bootstrap": "0.14.3",
-    "angular-ui-select2": "0.0.5",
     "angular-ui-select": "0.14.1",
     "angular-sanitize": "1.5.3"
   }

@@ -18,16 +18,16 @@
 
     <div class="col-md-6">
       <div class="form-group">
-        <select ui-select2
-          class="form-control"
-          ng-model="selectedTableIndex"
-          ng-change="handleItemSelect(flattenedMenuItems[selectedTableIndex])"
-          data-placeholder="Pick a Table"
+        <ui-select ng-model="selectedTable"
+          ng-change="handleItemSelect(selectedTable)"
           style="width:100%;">
-          <option value=""></option>
-          <option ng-repeat="item in flattenedMenuItems"
-            value="{{$index}}">{{item.displayName}}</option>
-        </select>
+          <ui-select-match placeholder="Pick a Table">
+            <span class="text-muted">Pick a Table</span>
+          </ui-select-match>
+          <ui-select-choices repeat="item in (flattenedMenuItems | filter: $select.search) track by $index">
+            <span>{{item.displayName}}</span>
+          </ui-select-choices>
+        </ui-select>
       </div>
     </div>
   </div>

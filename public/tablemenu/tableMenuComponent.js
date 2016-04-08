@@ -1,11 +1,15 @@
-angular.module('tableMenuComponent', ['ui.select2'])
+angular.module('tableMenuComponent', [
+    'ui.bootstrap',
+    'ui.select',
+    'ngSanitize'
+  ])
   .component('tablemenu', {
     templateUrl: 'tablemenu/tablemenu.html',
     controller: ['$http', '$scope', 'editorService', function($http, $scope, editorService) {
       $scope.breadcrump = [];
       $scope.showMenuItems = true;
       $scope.flattenedMenuItems = undefined;
-      $scope.selectedTableIndex = undefined;
+      $scope.selectedTable = undefined;
 
       this.$onInit = function() {
         $scope.breadcrump.push($scope.$ctrl.selectedMenuItem);
@@ -23,7 +27,7 @@ angular.module('tableMenuComponent', ['ui.select2'])
         if (!menuItem.isTable) {
           $scope.breadcrump.push(menuItem);
         } else {
-          $scope.selectedTableIndex = undefined;
+          $scope.selectedTable = undefined;
           updateBreadcrump(menuItem);
           $scope.showMenuItems = false;
         }
