@@ -19,12 +19,12 @@
     <div class="col-md-6">
       <div class="form-group">
         <ui-select ng-model="selectedTable"
-          ng-change="handleItemSelect(selectedTable)"
+          ng-change="handleItemSelect(findMenuItem(selectedTable))"
           style="width:100%;">
           <ui-select-match placeholder="Pick a Table">
             <span class="text-muted">Pick a Table</span>
           </ui-select-match>
-          <ui-select-choices repeat="item in (flattenedMenuItems | filter: $select.search) track by $index">
+          <ui-select-choices repeat="item in (tableMenuItems | filter: $select.search) track by item.managerClassName">
             <span>{{item.displayName}}</span>
           </ui-select-choices>
         </ui-select>

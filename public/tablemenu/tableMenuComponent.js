@@ -9,11 +9,13 @@ angular.module('tableMenuComponent', [
       $scope.breadcrump = [];
       $scope.showMenuItems = true;
       $scope.flattenedMenuItems = undefined;
-      $scope.selectedTable = undefined;
+      $scope.tableMenuItems = undefined; // flattenedMenuItems cannot be used in ui-select because of parent-ref
+      $scope.selectedTable = undefined; // {managerClassName, displayName}
 
       this.$onInit = function() {
         $scope.breadcrump.push($scope.$ctrl.selectedMenuItem);
         $scope.flattenedMenuItems = flattenMenu($scope.$ctrl.selectedMenuItem.menuItems);
+        $scope.tableMenuItems = findTableMenuItems($scope.flattenedMenuItems);
         restoreStateFromUrl();
       };
 
@@ -31,6 +33,12 @@ angular.module('tableMenuComponent', [
           updateBreadcrump(menuItem);
           $scope.showMenuItems = false;
         }
+      };
+
+      $scope.findMenuItem = function(selectedTable) {
+        return selectedTable && _.find($scope.flattenedMenuItems, {
+          managerClassName: selectedTable.managerClassName
+        });
       };
 
       $scope.handleBreadCrumpSelect = function($index) {
@@ -76,6 +84,15 @@ angular.module('tableMenuComponent', [
           path.push(item);
         }
         return _.reverse(path);
+      }
+
+      function findTableMenuItems(flattenedMenuItems) {
+        return _.map(flattenedMenuItems, function(item) {
+          return {
+            managerClassName: item.managerClassName,
+            displayName: item.displayName
+          };
+        });
       }
 
     }],
