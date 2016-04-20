@@ -14,7 +14,7 @@ app.use(logger('dev'));
 var proxy = httpProxy.createProxyServer({
   target: {
     host: 'localhost',
-    port: 80 //9090
+    port: 9090
   }
 });
 proxy.on('error', console.log);
@@ -22,6 +22,9 @@ app.all('/ws*', function(req, res) {
   proxy.web(req, res);
 });
 app.all('/webapps*', function(req, res) {
+  proxy.web(req, res);
+});
+app.all('/webfile*', function(req, res) {
   proxy.web(req, res);
 });
 app.all('/Login*', function(req, res) {

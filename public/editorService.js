@@ -1,55 +1,101 @@
-angular.module('editorService', [])
-  .factory('editorService', ['$http', '$location', function($http, $location) {
-    return new EditorService();
+angular.module('editorService', ['ui.bootstrap'])
+  .factory('editorService', ['$http', '$location', '$uibModal',
+    function($http, $location, $uibModal) {
+      return new EditorService();
 
-    function EditorService() {
-      // url-state properties
-      this.MANAGER_CLASS_NAME = 'managerClassName';
-      this.INSTANCE_ID = 'instanceId';
+      function EditorService() {
+        var scope = this;
 
-      this.updateUrlState = function(name, value) {
-        $location.search(name, value);
-      };
+        // url-state properties
+        this.MANAGER_CLASS_NAME = 'managerClassName';
+        this.INSTANCE_ID = 'instanceId';
 
-      this.findFromUrlState = function(name) {
-        return $location.search()[name];
-      };
+        this.loader = undefined;
 
-      // only for root-dbObjects
-      this.updateInstance = function(instance, classType) {
-        return $http({
-          url: '/ws/dbeditor/api/',
-          method: 'PUT',
-          params: {
-            id: instance.id,
-            classType: classType
-          },
-          data: instance
-        });
-      };
+        this.updateUrlState = function(name, value) {
+          $location.search(name, value);
+        };
 
-      // only for root-dbObjects
-      this.insertInstance = function(instance, classType) {
-        return $http({
-          url: '/ws/dbeditor/api/',
-          method: 'POST',
-          params: {
-            classType: classType
-          },
-          data: instance
-        });
-      };
+        this.findFromUrlState = function(name) {
+          return $location.search()[name];
+        };
 
-      // only for root-dbObjects
-      this.deleteInstance = function(instance, classType) {
-        return $http({
-          url: '/ws/dbeditor/api/',
-          method: 'DELETE',
-          params: {
-            id: instance.id,
-            classType: classType
+        this.showLoading = function() {
+          if (scope.loader) {
+            scope.loader.close();
           }
-        });
-      }
-    };
-  }])
+          scope.loader = $uibModal.open({
+            animation: false,
+            template: '<div class="loader"></div>',
+            windowTopClass: 'loading'
+          });
+          return this;
+        };
+
+        this.hideLoading = function() {
+          if (scope.loader) {
+            scope.loader.close();
+          }
+          return this;
+        };
+
+        // only for root-dbObjects
+        this.updateInstance = function(instance, classType) {
+          return $http({
+            url: '/ws/dbeditor/api/',
+            method: 'PUT',
+            params: {
+              id: instance.id,
+              classType: classType
+            },
+            data: instance
+          });
+        };
+
+        // only for root-dbObjects
+        this.insertInstance = function(instance, classType) {
+          return $http({
+            url: '/ws/dbeditor/api/',
+            method: 'POST',
+            params: {
+              classType: classType
+            },
+            data: instance
+          });
+        };
+
+        // only for root-dbObjects
+        this.deleteInstance = function(instance, classType) {
+          return $http({
+            url: '/ws/dbeditor/api/',
+            method: 'DELETE',
+            params: {
+              id: instance.id,
+              classType: classType
+            }
+          });
+        };
+
+        this.fetchEmptyInstance = function(classType, managedClassType) {
+          return $http({
+            url: '/ws/dbeditor/api/empty',
+            method: 'GET',
+            params: {
+              classType: classType,
+              managedClassType: managedClassType
+            }
+          });
+        };
+
+        this.findDBObjectClass = function(managerClassName) {
+          return $http
+            .get('/ws/dbeditor/api/findDBObjectClass', {
+              params: {
+                managerClassName: managerClassName
+              }
+            });
+        };
+
+      };
+    }
+  ])

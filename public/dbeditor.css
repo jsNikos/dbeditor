@@ -54,3 +54,19 @@
 .dbeditor .dbimage{
   margin-right: 5px;
 }
+.dbeditor .loading .modal-content{
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+}
+.dbeditor .loading .modal-dialog{
+  top: 40%;
+}
+.dbeditor .loader {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('/webfile?name=loading.gif');
+  width: 50px;
+  height: 50px;
+  margin: auto;
+}

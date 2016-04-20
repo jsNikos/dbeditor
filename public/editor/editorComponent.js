@@ -8,7 +8,7 @@ angular.module('editorComponent', [
   ])
   .component('editor', {
     templateUrl: 'editor/editor.html',
-    controller: ['$http', '$scope', 'editorService', function($http, $scope, editorService) {
+    controller: ['$scope', 'editorService', function($scope, editorService) {
       $scope.selectedType = undefined; // DBObjectClassDTO
       $scope.selectedInstance = undefined; // DBObjectDTO
       $scope.editStatus = undefined; // saved, new, changed, canceled
@@ -45,6 +45,7 @@ angular.module('editorComponent', [
         var promise;
         var currId = breadcrumpRoot.instance.id;
         var isNew = (currId == undefined);
+        editorService.showLoading();
         if (isNew) {
           promise = editorService.insertInstance(breadcrumpRoot.instance, $scope.$ctrl.selectedManagedTable.classType);
         } else {
@@ -70,6 +71,7 @@ angular.module('editorComponent', [
             $scope.selectedType = $scope.$ctrl.selectedManagedTable;
             $scope.selectedInstance = resp.data;
           })
+          .then(editorService.hideLoading)
           .catch(console.log);
       };
 
@@ -92,6 +94,7 @@ angular.module('editorComponent', [
           leaf.type.childObjects.splice(instanceIdx, 1);
           $scope.handleSave($scope.breadcrumpNodes[0]);
         } else {
+          editorService.showLoading();
           editorService.deleteInstance(instance, $scope.$ctrl.selectedManagedTable.classType)
             .then(function(resp) {
               _.remove($scope.$ctrl.selectedManagedTable.childObjects, {
@@ -100,21 +103,18 @@ angular.module('editorComponent', [
               leaf.instance = undefined;
               leaf.oldInstance = undefined;
               $scope.selectedInstance = undefined;
-            });
+            })
+            .then(editorService.hideLoading)
+            .catch(console.log);
         }
       };
 
       // requests empty-instance, adds to type.childObjects and sets this
       // into editor as selectedInstance.
       $scope.handleNew = function(selectedType) {
-        $http({
-            url: '/ws/dbeditor/api/empty',
-            method: 'GET',
-            params: {
-              classType: selectedType.classType,
-              managedClassType: $scope.$ctrl.selectedManagedTable.classType
-            }
-          })
+        editorService
+          .showLoading()
+          .fetchEmptyInstance(selectedType.classType, $scope.$ctrl.selectedManagedTable.classType)
           .then(function(resp) {
             $scope.selectedInstance = resp.data;
             var isSubTable = $scope.breadcrumpNodes.length > 1;
@@ -125,6 +125,7 @@ angular.module('editorComponent', [
             leaf.instance = resp.data;
             leaf.oldInstance == undefined;
           })
+          .then(editorService.hideLoading)
           .catch(console.log);
       };
 

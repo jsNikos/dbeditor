@@ -5,7 +5,7 @@ angular.module('tableMenuComponent', [
   ])
   .component('tablemenu', {
     templateUrl: 'tablemenu/tablemenu.html',
-    controller: ['$http', '$scope', 'editorService', function($http, $scope, editorService) {
+    controller: ['$scope', 'editorService', function($scope, editorService) {
       $scope.breadcrump = [];
       $scope.showMenuItems = true;
       $scope.flattenedMenuItems = undefined;

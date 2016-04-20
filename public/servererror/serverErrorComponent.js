@@ -10,7 +10,7 @@ angular.module('serverErrorComponent', ['ui.bootstrap'])
     });
   }])
   .component('servererror', {
-    controller: function($rootScope, $uibModal, $location) {
+    controller: function($rootScope, $uibModal, $location, editorService) {
       $rootScope.$on('server-error', function(event, rejection) {
         if (rejection.status === 401) {
           handleNotAuthenticated();
@@ -48,6 +48,7 @@ angular.module('serverErrorComponent', ['ui.bootstrap'])
       }
 
       function showPopup(model) {
+        editorService.hideLoading();
         return $uibModal
           .open({
             animation: true,
