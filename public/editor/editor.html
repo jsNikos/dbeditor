@@ -18,7 +18,7 @@
         <div class="form-group"
           ng-repeat="field in selectedInstance.fields">
           <div class="field-name">
-            <b>{{field.displayName}}</b>
+            <b>{{field.displayName}}</b><span class="required" ng-show="field.required">*</span>
             <br>
             <small>{{field.help}}</small>
           </div>
@@ -28,32 +28,33 @@
             <input type="text"
               class="form-control"
               ng-model="field.value"
-              ng-switch-when="TEXT">
+              ng-switch-when="TEXT"
+              ng-readonly="field.readonly">
 
             <textarea class="form-control"
               ng-model="field.value"
-              ng-switch-when="TEXTAREA"></textarea>
+              ng-switch-when="TEXTAREA"
+              ng-readonly="field.readonly"></textarea>
 
             <timeofday ng-model="field.value"
-              ng-switch-when="TIME_OF_DAY"></timeofday>
+              ng-switch-when="TIME_OF_DAY"
+              ng-disabled="field.readonly"></timeofday>
 
             <datetimepicker ng-switch-when="DATETIME"
               placeholder="yyyy-MM-dd"
-              min-date="minDate"
-              show-weeks="showWeeks"
               hour-step="1"
               minute-step="15"
               ng-model="field.value"
               show-meridian="true"
               date-format="yyyy-MM-dd"
-              date-options="dateOptions"
-              date-disabled="disabled(date, mode)"
               show-spinners="true"
-              readonly-time="false"></datetimepicker>
+              readonly-time="field.readonly"
+              readonly-date="field.readonly"></datetimepicker>
 
             <select ng-model="field.value"
               ng-switch-when="SELECT"
-              class="form-control">
+              class="form-control"
+              ng-disabled="field.readonly">
               <option value=""></option>
               <option ng-repeat="allowedValue in field.allowedValues"
                 value="{{allowedValue}}">{{allowedValue}}</option>
@@ -61,9 +62,10 @@
 
             <div ng-switch-when="IMAGE_CHOOSER">
               <ui-select ng-model="field.value"
-                width="400px;">
+                width="400px;"
+                ng-disabled="field.readonly">
                 <ui-select-match placeholder="Select an Image"
-                  allow-clear="true">
+                  allow-clear="{{!field.readonly}}">
                   <img ng-src="{{field.value.path}}"
                     class="dbimage" />
                   <span>{{field.value.name}}</span>
@@ -80,7 +82,8 @@
               ng-switch-when="CHECKBOX">
               <label>
                 <input type="checkbox"
-                  ng-model="field.value" />
+                  ng-model="field.value"
+                  ng-disabled="field.readonly" />
               </label>
             </div>
 

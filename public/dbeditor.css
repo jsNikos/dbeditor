@@ -70,3 +70,7 @@
   height: 50px;
   margin: auto;
 }
+.dbeditor .required{
+  color: red;
+  padding-left: 2px;
+}

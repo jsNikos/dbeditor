@@ -6,7 +6,7 @@ angular.module('timeofday', [
     controller: ['$scope', '$filter', function($scope, $filter) {
       $scope.selectedDate = undefined;
 
-      this.$onInit = function() {
+      this.$onInit = function() {        
         if ($scope.$ctrl.ngModel) {
           var date = new Date();
           date.setMinutes($scope.$ctrl.ngModel.minutes);
@@ -23,6 +23,7 @@ angular.module('timeofday', [
 
     }],
     bindings: {
-      'ngModel': '=' // TimeOfDayDTO
+      'ngModel': '=', // TimeOfDayDTO
+      'ngDisabled': '<'
     }
   })
