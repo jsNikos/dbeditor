@@ -18,7 +18,9 @@
         <div class="form-group"
           ng-repeat="field in selectedInstance.fields">
           <div class="field-name">
-            <b>{{field.displayName}}</b><span class="required" ng-show="field.required">*</span>
+            <b>{{field.displayName}}</b>
+            <span class="required"
+              ng-show="field.required">*</span>
             <br>
             <small>{{field.help}}</small>
           </div>
@@ -40,16 +42,16 @@
               ng-switch-when="TIME_OF_DAY"
               ng-disabled="field.readonly"></timeofday>
 
-            <datetimepicker ng-switch-when="DATETIME"
-              placeholder="yyyy-MM-dd"
-              hour-step="1"
-              minute-step="15"
+            <datetimepicker ng-switch-when="DAY"
               ng-model="field.value"
-              show-meridian="true"
-              date-format="yyyy-MM-dd"
-              show-spinners="true"
-              readonly-time="field.readonly"
-              readonly-date="field.readonly"></datetimepicker>
+              date-format="'YYYY-MM-DD'"
+              ng-disabled="field.readonly"></datetimepicker>
+
+            <datetimepicker ng-switch-when="DATETIME"
+              ng-model="field.value"
+              show-time="true"
+              date-format="'YYYY-MM-DD'+'T'+'HH:mm:ss.SSSZZ'"           
+              ng-disabled="field.readonly"></datetimepicker>
 
             <select ng-model="field.value"
               ng-switch-when="SELECT"

@@ -1,6 +1,6 @@
 angular.module('editorComponent', [
     'ui.bootstrap',
-    'ui.bootstrap.datetimepicker',
+    'datetimepicker',
     'instancesComponent',
     'ui.select',
     'ngSanitize',

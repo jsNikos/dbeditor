@@ -1,0 +1,20 @@
+<input type="text"
+  class="form-control"
+  placeholder="yyyy-MM-dd"
+  uib-datepicker-popup="yyyy-MM-dd"
+  hour-step="1"
+  minute-step="15"
+  ng-model="date"
+  close-text="Close"
+  ng-disabled="$ctrl.ngDisabled"
+  is-open="pickerIsOpen"
+  ng-click="$ctrl.handleDateInputClick()"
+  ng-change="$ctrl.handleDateChange(date)" />
+
+<uib-timepicker ng-model="time"
+  hour-step="1"
+  minute-step="15"
+  show-meridian="true"
+  ng-change="$ctrl.handleTimeChange(time)"
+  ng-disabled="$ctrl.ngDisabled"
+  ng-show="$ctrl.showTime && date != undefined"></uib-timepicker>

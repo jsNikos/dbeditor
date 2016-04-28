@@ -10,8 +10,7 @@
     "amd"
   ],
   "homepage": "",
-  "dependencies": {
-    "angular-ui-bootstrap-datetimepicker": "0.14.0",
+  "dependencies": {    
     "angular-bootstrap": "1.3.2",
     "angular-ui-select": "0.14.1",
     "angular-sanitize": "1.5.3"
