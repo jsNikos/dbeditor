@@ -21,8 +21,8 @@
             <b>{{field.displayName}}</b>
             <span class="required"
               ng-show="field.required">*</span>
-            <br>
-            <small>{{field.help}}</small>
+              <br>
+              <small>{{field.help}}</small>
           </div>
 
           <div ng-switch="field.editor"
@@ -50,7 +50,7 @@
             <datetimepicker ng-switch-when="DATETIME"
               ng-model="field.value"
               show-time="true"
-              date-format="'YYYY-MM-DD'+'T'+'HH:mm:ss.SSSZZ'"           
+              date-format="'YYYY-MM-DD'+'T'+'HH:mm:ss.SSSZZ'"
               ng-disabled="field.readonly"></datetimepicker>
 
             <select ng-model="field.value"
