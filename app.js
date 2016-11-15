@@ -14,7 +14,7 @@ app.use(logger('dev'));
 var proxy = httpProxy.createProxyServer({
   target: {
     host: 'localhost',
-    port: 80
+    port: 9090
   }
 });
 proxy.on('error', console.log);

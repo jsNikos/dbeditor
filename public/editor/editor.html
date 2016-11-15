@@ -12,106 +12,105 @@
     </ol>
   </div>
 
-  <div class="row">
-    <div class="col-md-6">
-      <form class="form-horizontal">
-        <div class="form-group"
-          ng-repeat="field in selectedInstance.fields">
-          <div class="field-name">
-            <b>{{field.displayName}}</b>
-            <span class="required"
-              ng-show="field.required">*</span>
-              <br>
-              <small>{{field.help}}</small>
-          </div>
+  <div class="positioner" ng-class="{selected: !!selectedInstance}">
+    <div class="editors">
+      <div class="editor-row"
+        ng-repeat="field in selectedInstance.fields">
+        <div class="field-name">
+          <b>{{field.displayName}}</b>
+          <span class="required"
+            ng-show="field.required">*</span>
+        </div>
 
-          <div ng-switch="field.editor"
-            class="field-editor">
-            <input type="text"
-              class="form-control"
-              ng-model="field.value"
-              ng-switch-when="TEXT"
-              ng-readonly="field.readonly">
+        <div ng-switch="field.editor"
+          class="field-editor">
+          <input type="text"
+            class="form-control"
+            ng-model="field.value"
+            ng-switch-when="TEXT"
+            ng-readonly="field.readonly">
 
-            <textarea class="form-control"
-              ng-model="field.value"
-              ng-switch-when="TEXTAREA"
-              ng-readonly="field.readonly"></textarea>
+          <textarea class="form-control"
+            ng-model="field.value"
+            ng-switch-when="TEXTAREA"
+            ng-readonly="field.readonly"></textarea>
 
-            <timeofday ng-model="field.value"
-              ng-switch-when="TIME_OF_DAY"
-              ng-disabled="field.readonly"></timeofday>
+          <timeofday ng-model="field.value"
+            ng-switch-when="TIME_OF_DAY"
+            ng-disabled="field.readonly"></timeofday>
 
-            <datetimepicker ng-switch-when="DAY"
-              ng-model="field.value"
-              date-format="'YYYY-MM-DD'"
-              ng-disabled="field.readonly"></datetimepicker>
+          <datetimepicker ng-switch-when="DAY"
+            ng-model="field.value"
+            date-format="'YYYY-MM-DD'"
+            ng-disabled="field.readonly"></datetimepicker>
 
-            <datetimepicker ng-switch-when="DATETIME"
-              ng-model="field.value"
-              show-time="true"
-              date-format="'YYYY-MM-DD'+'T'+'HH:mm:ss.SSSZZ'"
-              ng-disabled="field.readonly"></datetimepicker>
+          <datetimepicker ng-switch-when="DATETIME"
+            ng-model="field.value"
+            show-time="true"
+            date-format="'YYYY-MM-DD'+'T'+'HH:mm:ss.SSSZZ'"
+            ng-disabled="field.readonly"></datetimepicker>
 
-            <select ng-model="field.value"
-              ng-switch-when="SELECT"
-              class="form-control"
+          <select ng-model="field.value"
+            ng-switch-when="SELECT"
+            class="form-control"
+            ng-disabled="field.readonly">
+            <option value=""></option>
+            <option ng-repeat="allowedValue in field.allowedValues"
+              value="{{allowedValue}}">{{allowedValue}}</option>
+          </select>
+
+          <div ng-switch-when="IMAGE_CHOOSER">
+            <ui-select ng-model="field.value"
+              width="400px;"
               ng-disabled="field.readonly">
-              <option value=""></option>
-              <option ng-repeat="allowedValue in field.allowedValues"
-                value="{{allowedValue}}">{{allowedValue}}</option>
-            </select>
-
-            <div ng-switch-when="IMAGE_CHOOSER">
-              <ui-select ng-model="field.value"
-                width="400px;"
-                ng-disabled="field.readonly">
-                <ui-select-match placeholder="Select an Image"
-                  allow-clear="{{!field.readonly}}">
-                  <img ng-src="{{field.value.path}}"
-                    class="dbimage" />
-                  <span>{{field.value.name}}</span>
-                </ui-select-match>
-                <ui-select-choices repeat="allowedValue in (field.allowedValues | filter: $select.search) track by allowedValue.id">
-                  <img ng-src="{{allowedValue.path}}"
-                    class="dbimage" />
-                  <span>{{allowedValue.groupName}} - {{allowedValue.name}}</span>
-                </ui-select-choices>
-              </ui-select>
-            </div>
-
-            <div class="checkbox"
-              ng-switch-when="CHECKBOX">
-              <label>
-                <input type="checkbox"
-                  ng-model="field.value"
-                  ng-disabled="field.readonly" />
-              </label>
-            </div>
-
-            <div ng-switch-default>Not supported editor {{field.editor}}</div>
+              <ui-select-match placeholder="Select an Image"
+                allow-clear="{{!field.readonly}}">
+                <img ng-src="{{field.value.path}}"
+                  class="dbimage" />
+                <span>{{field.value.name}}</span>
+              </ui-select-match>
+              <ui-select-choices repeat="allowedValue in (field.allowedValues | filter: $select.search) track by allowedValue.id">
+                <img ng-src="{{allowedValue.path}}"
+                  class="dbimage" />
+                <span>{{allowedValue.groupName}} - {{allowedValue.name}}</span>
+              </ui-select-choices>
+            </ui-select>
           </div>
 
+          <div class="checkbox"
+            ng-switch-when="CHECKBOX">
+            <label>
+              <input type="checkbox"
+                ng-model="field.value"
+                ng-disabled="field.readonly" />
+            </label>
+          </div>
+
+          <div ng-switch-default>Not supported editor {{field.editor}}</div>
         </div>
 
-        <div class="subtables"
-          ng-if="selectedInstance.subTables && selectedInstance.subTables.length > 0">
-          <ul class="list-group">
-            <li class="list-group-item"
-              ng-repeat="subTable in selectedInstance.subTables">
-              <span class="badge">{{subTable.childObjects.length}}</span>
-              <button type="button"
-                class="btn btn-default"
-                ng-click="handleSelectSubtable(subTable)">Edit {{subTable.tableName}}</button>
-            </li>
-          </ul>
+        <div class="help-line">
+          <small class="field-help">{{field.help}}</small>
         </div>
 
-      </form>
+      </div>
+
+      <div class="subtables"
+        ng-if="selectedInstance.subTables && selectedInstance.subTables.length > 0">
+        <ul class="list-group">
+          <li class="list-group-item"
+            ng-repeat="subTable in selectedInstance.subTables">
+            <span class="badge">{{subTable.childObjects.length}}</span>
+            <button type="button"
+              class="btn btn-default"
+              ng-click="handleSelectSubtable(subTable)">Edit {{subTable.tableName}}</button>
+          </li>
+        </ul>
+      </div>
 
     </div>
 
-    <div class="col-md-6">
+    <div class="instances">
       <instances selected-type="selectedType"
         selected-instance="selectedInstance"
         model-inited="modelInited"
