@@ -12,7 +12,7 @@ angular.module('editorComponent', [
       $scope.selectedType = undefined; // DBObjectClassDTO
       $scope.selectedInstance = undefined; // DBObjectDTO
       $scope.editStatus = undefined; // saved, new, changed, canceled
-      $scope.breadcrumpNodes = []; // [{type: Type, instance: Instance}] the path of selected instances (breadcrump)
+      $scope.breadcrumpNodes = []; // [{type: Type, instance: Instance, oldInstance: json}] the path of selected instances (breadcrump)
       $scope.modelInited = false;
 
       this.$onInit = function() {
@@ -76,9 +76,23 @@ angular.module('editorComponent', [
       };
 
       $scope.handleCancel = function() {
-        var oldInstance = _.last($scope.breadcrumpNodes).oldInstance;
-        var instance = _.last($scope.breadcrumpNodes).instance;
-        _.assign(instance, angular.fromJson(angular.toJson(oldInstance)));
+				var leaf = _.last($scope.breadcrumpNodes);
+        var instance = leaf.instance;
+
+				var isNew = instance.id == undefined;
+				if(isNew){
+					var isSubTable = $scope.breadcrumpNodes.length > 1;
+					if(isSubTable){
+						_.remove(leaf.type.childObjects, instance);
+					}
+					leaf.instance = undefined;
+					$scope.selectedInstance = undefined;
+
+				} else {
+					var oldInstance = leaf.oldInstance;
+					_.assign(instance, angular.fromJson(angular.toJson(oldInstance)));
+				}
+
         $scope.editStatus = 'canceled';
       };
 
@@ -116,7 +130,7 @@ angular.module('editorComponent', [
           .showLoading()
           .fetchEmptyInstance(selectedType.classType, $scope.$ctrl.selectedManagedTable.classType)
           .then(function(resp) {
-            $scope.selectedInstance = resp.data;
+						$scope.selectedInstance = resp.data;
             var isSubTable = $scope.breadcrumpNodes.length > 1;
             var leaf = _.last($scope.breadcrumpNodes);
             if (isSubTable) {

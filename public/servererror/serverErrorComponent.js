@@ -35,8 +35,8 @@ angular.module('serverErrorComponent', ['ui.bootstrap'])
 
       function handleInternalError() {
         showPopup({
-          title: 'Internal Error',
-          msg: 'Sorry, something went wrong.'
+          title: 'Internal Software Error',
+          msg: 'The system has encountered an unexpected error processing your last request.'
         });
       }
 

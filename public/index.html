@@ -23,6 +23,10 @@
 <body ng-cloak
   class="dbeditor">
 
+	<div class="logo-line container-fluid">
+		<a ng-bind-html="logo" href="/admin" target="_self"></a>
+	</div>
+
   <tablemenu selected-menu-item="selectedMenuItem"
     on-select-menu-item="handleMenuItemSelect(menuItem)"
     ng-if="showMenu"></tablemenu>

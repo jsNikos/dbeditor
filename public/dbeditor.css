@@ -120,3 +120,7 @@
 .dbeditor .subtables {
   display: flex;
 }
+.dbeditor .logo-line {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}

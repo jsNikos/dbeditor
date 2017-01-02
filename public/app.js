@@ -14,6 +14,7 @@ var dbeditorApp = angular.module('dbeditorApp', [
   ])
   .controller('appController', ['$rootScope', '$scope', '$http', 'editorService',
     function($rootScope, $scope, $http, editorService) {
+			$scope.logo = undefined;
       $scope.selectedManagedTable = undefined; // DBObjectClassDTO (selected table from menu)
       $scope.showEditor = false;
       $scope.showMenu = false;
@@ -21,6 +22,11 @@ var dbeditorApp = angular.module('dbeditorApp', [
 
       function init() {
         editorService.showLoading();
+				$http.get('/ws/dbeditor/api/findLogo')
+					.then(function(resp){
+						$scope.logo = resp.data.logo;
+					});
+
         $http.get('/ws/dbeditor/api/menu')
           .then(function(resp) {
             $scope.selectedMenuItem = {
@@ -39,10 +45,12 @@ var dbeditorApp = angular.module('dbeditorApp', [
         $scope.selectedMenuItem = menuItem;
         if (menuItem.isTable) {
           handleTableSelect(menuItem);
-          var isChangeRootTable = (editorService.findFromUrlState(editorService.MANAGER_CLASS_NAME) !== menuItem.managerClassName);
           editorService.updateUrlState(editorService.MANAGER_CLASS_NAME, menuItem.managerClassName);
-          isChangeRootTable && editorService.updateUrlState(editorService.INSTANCE_ID, null);
-        }
+          editorService.updateUrlState(editorService.INSTANCE_ID, null);
+        } else {
+					editorService.updateUrlState(editorService.MANAGER_CLASS_NAME, null);
+					editorService.updateUrlState(editorService.INSTANCE_ID, null);
+				}
       };
 
       function handleTableSelect(menuItem) {
