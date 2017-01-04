@@ -28,11 +28,14 @@
 	</div>
 
   <tablemenu selected-menu-item="selectedMenuItem"
+		flattened-menu-items="flattenedMenuItems"
     on-select-menu-item="handleMenuItemSelect(menuItem)"
     ng-if="showMenu"></tablemenu>
 
   <editor selected-managed-table="selectedManagedTable"
     menu-item="selectedMenuItem"
+		on-flag-with-changed="handleFlagWithChanged(dbObjectClassDTO)"
+		on-refresh-changed-flags="handleRefreshChangedFlags(dbObjectClassDTO)"
     ng-if="showEditor"></editor>
 
   <servererror></servererror>

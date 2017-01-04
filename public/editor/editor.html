@@ -3,7 +3,7 @@
   <div class="row">
     <ol class="breadcrumb">
       <li ng-repeat="breadcrumpNode in breadcrumpNodes"
-        ng-class="{active: $last}">
+        ng-class="{active: $last, changed:breadcrumpNode.type._changed}">
         <a href="#"
           ng-click="handleBreadcrumb(breadcrumpNode)"
           ng-if="!$last"><b>{{breadcrumpNode.type.displayName}}</b> <i>{{breadcrumpNode.instance.displayValue}}</i></a>
@@ -99,7 +99,8 @@
         ng-if="selectedInstance.subTables && selectedInstance.subTables.length > 0">
         <ul class="list-group">
           <li class="list-group-item"
-            ng-repeat="subTable in selectedInstance.subTables">
+            ng-repeat="subTable in selectedInstance.subTables"
+						ng-class="{changed: subTable._changed}">
             <span class="badge">{{subTable.childObjects.length}}</span>
             <button type="button"
               class="btn btn-default"
@@ -123,11 +124,11 @@
       <button type="button"
         class="btn btn-success"
         ng-click="handleSave(breadcrumpNodes[0])"
-        ng-if="editStatus === 'new' || editStatus === 'changed'">Save</button>
+        ng-if="selectedInstance._changed">Save</button>
       <button type="button"
         class="btn btn-info"
         ng-click="handleCancel()"
-        ng-if="editStatus === 'new' || editStatus === 'changed'">Cancel</button>
+        ng-if="selectedInstance._changed">Cancel</button>
       <button type="button"
         class="btn btn-danger"
         ng-click="handleDelete(selectedInstance)"

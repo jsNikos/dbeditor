@@ -4,7 +4,7 @@
     <div class="col-md-6">
       <ol class="breadcrumb">
         <li ng-repeat="menuItem in breadcrump"
-          ng-class="{active: $last}">
+          ng-class="{active: $last, changed: menuItem._changed}">
           <a ng-if="!$first"
             href="#"
             ng-click="handleBreadCrumpSelect($index)">{{menuItem.displayName}}</a>
@@ -37,7 +37,7 @@
       ng-repeat="menuItem in $ctrl.selectedMenuItem.menuItems">
       <div class="item-box"
         ng-click="handleItemSelect(menuItem)"
-        ng-class="{disabled: !menuItem.enabled}">
+        ng-class="{disabled: !menuItem.enabled, changed: menuItem._changed}">
         <div class="item-label">
           <span class="item-icon">
             <i ng-if="menuItem.isTable"

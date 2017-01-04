@@ -33,6 +33,30 @@
   margin-top: 3px;
 }
 
+.dbeditor .editor-row{
+  padding: 10px 0px;
+}
+
+.dbeditor .breadcrumb .changed a{
+	color: red;
+}
+
+.dbeditor .breadcrumb .changed{
+	color: red;
+}
+
+.dbeditor .instances-table .changed {
+	color: red;
+}
+
+.dbeditor .item-box.changed {
+	background-color: red;
+}
+
+.dbeditor .subtables .changed button {
+	color: red;
+}
+
 @media (min-width:1200px) {
   .dbeditor .positioner.selected .editors{
     width: 630px;
@@ -46,10 +70,6 @@
     top:0px;
     right: 0px;
   }
-}
-
-.dbeditor .editor-row{
-  padding: 10px 0px;
 }
 
 @media (min-width:768px){

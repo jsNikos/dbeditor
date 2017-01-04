@@ -8,14 +8,12 @@ angular.module('tableMenuComponent', [
     controller: ['$scope', 'editorService', function($scope, editorService) {
       $scope.breadcrump = [];
       $scope.showMenuItems = true;
-      $scope.flattenedMenuItems = undefined;
       $scope.tableMenuItems = undefined; // flattenedMenuItems cannot be used in ui-select because of parent-ref
       $scope.selectedTable = undefined; // {managerClassName, displayName}
 
       this.$onInit = function() {
         $scope.breadcrump.push($scope.$ctrl.selectedMenuItem);
-        $scope.flattenedMenuItems = flattenMenu($scope.$ctrl.selectedMenuItem.menuItems);
-        $scope.tableMenuItems = findTableMenuItems($scope.flattenedMenuItems);
+        $scope.tableMenuItems = findTableMenuItems($scope.$ctrl.flattenedMenuItems);
         restoreStateFromUrl();
       };
 
@@ -36,7 +34,7 @@ angular.module('tableMenuComponent', [
       };
 
       $scope.findMenuItem = function(selectedTable) {
-        return selectedTable && _.find($scope.flattenedMenuItems, {
+        return selectedTable && _.find($scope.$ctrl.flattenedMenuItems, {
           managerClassName: selectedTable.managerClassName
         });
       };
@@ -52,7 +50,7 @@ angular.module('tableMenuComponent', [
       function restoreStateFromUrl() {
         var managerClassName = editorService.findFromUrlState(editorService.MANAGER_CLASS_NAME);
         if (managerClassName) {
-          var menuItem = _.find($scope.flattenedMenuItems, {
+          var menuItem = _.find($scope.$ctrl.flattenedMenuItems, {
             managerClassName: managerClassName
           });
           menuItem && $scope.handleItemSelect(menuItem);
@@ -62,18 +60,6 @@ angular.module('tableMenuComponent', [
       function updateBreadcrump(selectedMenuItem) {
         $scope.breadcrump.splice(0, $scope.breadcrump.length);
         Array.prototype.push.apply($scope.breadcrump, findPathTo(selectedMenuItem));
-      }
-
-      function flattenMenu(menuItems) {
-        var tables = [];
-        _.forEach(menuItems, function(menuItem) {
-          if (menuItem.isTable && menuItem.enabled) {
-            tables.push(menuItem);
-          } else {
-            Array.prototype.push.apply(tables, flattenMenu(menuItem.menuItems));
-          }
-        });
-        return tables;
       }
 
       function findPathTo(menuItem) {
@@ -98,6 +84,7 @@ angular.module('tableMenuComponent', [
     }],
     bindings: {
       selectedMenuItem: '<',
+			flattenedMenuItems: '<',
       onSelectMenuItem: '&'
     }
   });

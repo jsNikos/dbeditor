@@ -12,15 +12,15 @@ angular.module('editorComponent', [
       $scope.selectedType = undefined; // DBObjectClassDTO
       $scope.selectedInstance = undefined; // DBObjectDTO
       $scope.editStatus = undefined; // saved, new, changed, canceled
-      $scope.breadcrumpNodes = []; // [{type: Type, instance: Instance, oldInstance: json}] the path of selected instances (breadcrump)
+      $scope.breadcrumpNodes = []; // [{type: Type, instance: Instance}] the path of selected instances (breadcrump)
       $scope.modelInited = false;
 
       this.$onInit = function() {
         $scope.selectedType = $scope.$ctrl.selectedManagedTable;
+				_.forEach($scope.selectedType.childObjects, ensureOldInstanceProperty);
         $scope.breadcrumpNodes.push({
           type: $scope.$ctrl.selectedManagedTable,
-          instance: undefined,
-          oldInstance: undefined
+          instance: undefined
         });
         $scope.modelInited = true;
         restoreStateFromUrl();
@@ -32,6 +32,8 @@ angular.module('editorComponent', [
         if (isNew) {
           $scope.editStatus = 'new';
         } else if (isChanged) {
+					$scope.selectedInstance._changed = true;
+					flagParentsWithChanged($scope.selectedInstance);
           $scope.editStatus = 'changed';
         } else {
           $scope.editStatus = undefined;
@@ -56,8 +58,9 @@ angular.module('editorComponent', [
           .then(function(resp) {
             $scope.editStatus = 'saved';
             breadcrumpRoot.instance = resp.data;
-            breadcrumpRoot.oldInstance = angular.fromJson(angular.toJson(resp.data));
-            $scope.breadcrumpNodes.splice(1, $scope.breadcrumpNodes - 1);
+						ensureOldInstanceProperty(breadcrumpRoot.instance);
+
+            $scope.breadcrumpNodes.splice(1, $scope.breadcrumpNodes.length - 1);
             if (isNew) {
               $scope.$ctrl.selectedManagedTable.childObjects.push(resp.data);
             } else {
@@ -70,6 +73,11 @@ angular.module('editorComponent', [
 
             $scope.selectedType = $scope.$ctrl.selectedManagedTable;
             $scope.selectedInstance = resp.data;
+
+						breadcrumpRoot.type._changed = false;
+						$scope.$ctrl.onRefreshChangedFlags({
+							dbObjectClassDTO: $scope.$ctrl.selectedManagedTable
+						});
           })
           .then(editorService.hideLoading)
           .catch(console.log);
@@ -89,12 +97,35 @@ angular.module('editorComponent', [
 					$scope.selectedInstance = undefined;
 
 				} else {
-					var oldInstance = leaf.oldInstance;
-					_.assign(instance, angular.fromJson(angular.toJson(oldInstance)));
+					var oldInstance = angular.fromJson(angular.toJson(instance._oldInstance));
+					_.assign(instance, oldInstance);
+					ensureOldInstanceProperty(instance);
 				}
 
+				instance._changed = false;
+				refreshChangedFlags(leaf);
         $scope.editStatus = 'canceled';
       };
+
+			function refreshChangedFlags(breadcrumpNode){
+				var hasChanges = _.find(breadcrumpNode.type.childObjects, {
+					_changed: true
+				});
+				if(hasChanges){
+					return;
+				}
+
+				breadcrumpNode.type._changed = false;
+				var nodeIdx = _.indexOf($scope.breadcrumpNodes, breadcrumpNode);
+				if(nodeIdx > 0){
+					$scope.breadcrumpNodes[nodeIdx-1].instance._changed = false;
+					refreshChangedFlags($scope.breadcrumpNodes[nodeIdx-1]);
+				} else {
+					$scope.$ctrl.onRefreshChangedFlags({
+						dbObjectClassDTO: $scope.$ctrl.selectedManagedTable
+					});
+				}
+			}
 
       // for subtable deletions, triggers an update on the root-dbObject.
       // for root-dbObjects calls the delete server-endpoint.
@@ -115,7 +146,6 @@ angular.module('editorComponent', [
                 id: instance.id
               });
               leaf.instance = undefined;
-              leaf.oldInstance = undefined;
               $scope.selectedInstance = undefined;
             })
             .then(editorService.hideLoading)
@@ -131,13 +161,14 @@ angular.module('editorComponent', [
           .fetchEmptyInstance(selectedType.classType, $scope.$ctrl.selectedManagedTable.classType)
           .then(function(resp) {
 						$scope.selectedInstance = resp.data;
+						$scope.selectedInstance._changed = true;
             var isSubTable = $scope.breadcrumpNodes.length > 1;
             var leaf = _.last($scope.breadcrumpNodes);
             if (isSubTable) {
-              leaf.type.childObjects.push(resp.data);
+              leaf.type.childObjects.push($scope.selectedInstance);
             }
-            leaf.instance = resp.data;
-            leaf.oldInstance == undefined;
+            leaf.instance = $scope.selectedInstance;
+						flagParentsWithChanged($scope.selectedInstance);
           })
           .then(editorService.hideLoading)
           .catch(console.log);
@@ -149,8 +180,7 @@ angular.module('editorComponent', [
         $scope.editStatus = undefined;
         $scope.breadcrumpNodes.push({
           type: subTable,
-          instance: undefined,
-          oldInstance: undefined
+          instance: undefined
         });
       };
 
@@ -158,9 +188,6 @@ angular.module('editorComponent', [
         $scope.selectedInstance = instance;
         var leaf = _.last($scope.breadcrumpNodes);
         leaf.instance = instance;
-        if (leaf.oldInstance == undefined) {
-          leaf.oldInstance = angular.fromJson(angular.toJson(instance));
-        }
         var isRootInstance = ($scope.breadcrumpNodes.length === 1);
         if (isRootInstance) {
           editorService.updateUrlState(editorService.INSTANCE_ID, instance.id);
@@ -186,9 +213,30 @@ angular.module('editorComponent', [
         }
       }
 
+			function ensureOldInstanceProperty(dbObjectDTO) {
+				if(!dbObjectDTO._oldInstance){
+					dbObjectDTO._oldInstance = angular.fromJson(angular.toJson(dbObjectDTO));
+				}
+				_.forEach(dbObjectDTO.subTables, function(dbObjectClassDTO){
+					_.forEach(dbObjectClassDTO.childObjects, ensureOldInstanceProperty);
+				});
+			}
+
+			function flagParentsWithChanged(dbObjectDTO){
+				_.forEach($scope.breadcrumpNodes, function(breadcrumpNode){
+					breadcrumpNode.type._changed = true;
+					breadcrumpNode.instance._changed = true;
+				});
+				$scope.$ctrl.onFlagWithChanged({
+					dbObjectClassDTO: $scope.breadcrumpNodes[0].type
+				});
+			}
+
     }],
     bindings: {
       selectedManagedTable: '<',
-      menuItem: '<'
+      menuItem: '<',
+			onFlagWithChanged: '&',
+			onRefreshChangedFlags: '&'
     }
   });
