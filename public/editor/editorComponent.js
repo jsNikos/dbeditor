@@ -4,11 +4,12 @@ angular.module('editorComponent', [
     'instancesComponent',
     'ui.select',
     'ngSanitize',
-    'timeofday'
+    'timeofday',
+		'confirmDeleteModule'
   ])
   .component('editor', {
     templateUrl: 'editor/editor.html',
-    controller: ['$scope', 'editorService', function($scope, editorService) {
+    controller: ['$scope', 'editorService', '$uibModal', function($scope, editorService, $uibModal) {
       $scope.selectedType = undefined; // DBObjectClassDTO
       $scope.selectedInstance = undefined; // DBObjectDTO
       $scope.editStatus = undefined; // saved, new, changed, canceled
@@ -57,11 +58,10 @@ angular.module('editorComponent', [
         promise
           .then(function(resp) {
             $scope.editStatus = 'saved';
-            breadcrumpRoot.instance = resp.data;
-						ensureOldInstanceProperty(breadcrumpRoot.instance);
 
             $scope.breadcrumpNodes.splice(1, $scope.breadcrumpNodes.length - 1);
             if (isNew) {
+							_.remove($scope.$ctrl.selectedManagedTable.childObjects, breadcrumpRoot.instance);
               $scope.$ctrl.selectedManagedTable.childObjects.push(resp.data);
             } else {
               var instanceIdx =
@@ -74,6 +74,8 @@ angular.module('editorComponent', [
             $scope.selectedType = $scope.$ctrl.selectedManagedTable;
             $scope.selectedInstance = resp.data;
 
+						breadcrumpRoot.instance = resp.data;
+						ensureOldInstanceProperty(breadcrumpRoot.instance);
 						breadcrumpRoot.type._changed = false;
 						$scope.$ctrl.onRefreshChangedFlags({
 							dbObjectClassDTO: $scope.$ctrl.selectedManagedTable
@@ -89,10 +91,7 @@ angular.module('editorComponent', [
 
 				var isNew = instance.id == undefined;
 				if(isNew){
-					var isSubTable = $scope.breadcrumpNodes.length > 1;
-					if(isSubTable){
-						_.remove(leaf.type.childObjects, instance);
-					}
+					_.remove(leaf.type.childObjects, instance);
 					leaf.instance = undefined;
 					$scope.selectedInstance = undefined;
 
@@ -107,50 +106,10 @@ angular.module('editorComponent', [
         $scope.editStatus = 'canceled';
       };
 
-			function refreshChangedFlags(breadcrumpNode){
-				var hasChanges = _.find(breadcrumpNode.type.childObjects, {
-					_changed: true
-				});
-				if(hasChanges){
-					return;
-				}
-
-				breadcrumpNode.type._changed = false;
-				var nodeIdx = _.indexOf($scope.breadcrumpNodes, breadcrumpNode);
-				if(nodeIdx > 0){
-					$scope.breadcrumpNodes[nodeIdx-1].instance._changed = false;
-					refreshChangedFlags($scope.breadcrumpNodes[nodeIdx-1]);
-				} else {
-					$scope.$ctrl.onRefreshChangedFlags({
-						dbObjectClassDTO: $scope.$ctrl.selectedManagedTable
-					});
-				}
-			}
-
-      // for subtable deletions, triggers an update on the root-dbObject.
-      // for root-dbObjects calls the delete server-endpoint.
       $scope.handleDelete = function(instance) {
-        var isSubTable = $scope.breadcrumpNodes.length > 1;
-        var leaf = _.last($scope.breadcrumpNodes);
-        if (isSubTable) {
-          var instanceIdx = _.findIndex(leaf.type.childObjects, {
-            id: instance.id
-          });
-          leaf.type.childObjects.splice(instanceIdx, 1);
-          $scope.handleSave($scope.breadcrumpNodes[0]);
-        } else {
-          editorService.showLoading();
-          editorService.deleteInstance(instance, $scope.$ctrl.selectedManagedTable.classType)
-            .then(function(resp) {
-              _.remove($scope.$ctrl.selectedManagedTable.childObjects, {
-                id: instance.id
-              });
-              leaf.instance = undefined;
-              $scope.selectedInstance = undefined;
-            })
-            .then(editorService.hideLoading)
-            .catch(console.log);
-        }
+				confirmDelete(instance).then(function(){
+					deleteInstance(instance);
+				});
       };
 
       // requests empty-instance, adds to type.childObjects and sets this
@@ -164,9 +123,8 @@ angular.module('editorComponent', [
 						$scope.selectedInstance._changed = true;
             var isSubTable = $scope.breadcrumpNodes.length > 1;
             var leaf = _.last($scope.breadcrumpNodes);
-            if (isSubTable) {
-              leaf.type.childObjects.push($scope.selectedInstance);
-            }
+            leaf.type.childObjects.push($scope.selectedInstance);
+
             leaf.instance = $scope.selectedInstance;
 						flagParentsWithChanged($scope.selectedInstance);
           })
@@ -202,6 +160,68 @@ angular.module('editorComponent', [
         $scope.selectedType = breadcrumpNode.type;
         $scope.selectedInstance = breadcrumpNode.instance;
       };
+
+			// for subtable deletions, triggers an update on the root-dbObject.
+      // for root-dbObjects calls the delete server-endpoint.
+			function deleteInstance(instance){
+				var isSubTable = $scope.breadcrumpNodes.length > 1;
+        var leaf = _.last($scope.breadcrumpNodes);
+        if (isSubTable) {
+          var instanceIdx = _.findIndex(leaf.type.childObjects, {
+            id: instance.id
+          });
+          leaf.type.childObjects.splice(instanceIdx, 1);
+          $scope.handleSave($scope.breadcrumpNodes[0]);
+        } else {
+          editorService.showLoading();
+          editorService.deleteInstance(instance, $scope.$ctrl.selectedManagedTable.classType)
+            .then(function(resp) {
+              _.remove($scope.$ctrl.selectedManagedTable.childObjects, {
+                id: instance.id
+              });
+              leaf.instance = undefined;
+              $scope.selectedInstance = undefined;
+            })
+            .then(editorService.hideLoading)
+            .catch(console.log);
+        }
+			}
+
+			function confirmDelete(dbObjectDTO){
+				return $uibModal
+          .open({
+            animation: true,
+            templateUrl: 'editor/confirmDelete/confirmDelete.html',
+            controller: 'ConfirmDeleteController',
+            size: 'sm',
+            resolve: {
+              model: function() {
+                return dbObjectDTO;
+              }
+            }
+          })
+          .result;
+			}
+
+			function refreshChangedFlags(breadcrumpNode){
+				var hasChanges = _.find(breadcrumpNode.type.childObjects, {
+					_changed: true
+				});
+				if(hasChanges){
+					return;
+				}
+
+				breadcrumpNode.type._changed = false;
+				var nodeIdx = _.indexOf($scope.breadcrumpNodes, breadcrumpNode);
+				if(nodeIdx > 0){
+					$scope.breadcrumpNodes[nodeIdx-1].instance._changed = false;
+					refreshChangedFlags($scope.breadcrumpNodes[nodeIdx-1]);
+				} else {
+					$scope.$ctrl.onRefreshChangedFlags({
+						dbObjectClassDTO: $scope.$ctrl.selectedManagedTable
+					});
+				}
+			}
 
       function restoreStateFromUrl() {
         var id = editorService.findFromUrlState(editorService.INSTANCE_ID);
